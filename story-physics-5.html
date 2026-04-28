@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics - Air Around Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1E3A8A', accent: '#F97316', success: '#22C55E', cream: '#FFF7E6' } } } }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.8s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .secure-hide { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col secure-hide" id="story-body">
+
+    <header class="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center w-full">
+            <button onclick="window.location.href='physicsclass6.html'" class="text-gray-500 hover:text-primary font-bold flex items-center transition-colors">
+                ← Back to Topics
+            </button>
+            <div class="flex items-center space-x-2">
+                <span class="bg-blue-100 text-blue-800 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full">Physics</span>
+                <span class="text-gray-400 font-bold text-sm">Mission 5</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto w-full px-6 py-10 fade-in">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-primary mb-4">Air Around Us</h1>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 max-w-md mx-auto overflow-hidden">
+                <div id="progressBar" class="bg-success h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="flex justify-center space-x-4 md:space-x-8 mb-8">
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-orange-400 font-extrabold uppercase tracking-wider mb-1">Streak</span>
+                <div class="flex items-center text-orange-600 font-black bg-orange-50 border-2 border-orange-200 px-6 py-3 rounded-2xl shadow-md">
+                    <span class="mr-3 text-3xl md:text-4xl leading-none">🔥</span> <span id="live-streak">...</span>
+                </div>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-yellow-500 font-extrabold uppercase tracking-wider mb-1">Points</span>
+                <div class="flex items-center text-yellow-600 font-black bg-yellow-50 border-2 border-yellow-200 px-6 py-3 rounded-2xl shadow-md">
+                    <span class="mr-3 text-3xl md:text-4xl leading-none">🪙</span> <span id="live-points">...</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="part1" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Kavya was sitting at her desk, staring at her science book. The question read: "What is air? Does it occupy space?" She looked around. "Air is just... nothing," she thought. Her mother walked in with a glass of water. "What's the matter?" she asked. Kavya pointed to the question. Her mother smiled. "Let me show you that air is not 'nothing.' It is a real substance that takes up space and has weight."
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Kavya thinks air is "nothing." What is air made of? Does air occupy space?</p>
+                <textarea id="q1-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn1" onclick="gradeAnswer(1, ['mixture', 'gas', 'nitrogen', 'oxygen', 'space', 'weight', 'occupy'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp1" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">Air is a mixture of gases (78% Nitrogen, 21% Oxygen, 1% others like Carbon Dioxide). Yes, air occupies space and has weight, even though we cannot see it.</p>
+                    <button onclick="unlockNext(1)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success1" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part2" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Her mother took a glass, a plastic sheet, and a tub of water. She placed the plastic sheet tightly over the glass and pushed the glass upside down into the water. The water did not enter the glass! "See?" she said. "The glass is filled with air. Air takes up space, so water cannot enter." Kavya was surprised. Her mother removed the plastic sheet slightly, and bubbles rose up as water slowly filled the glass.
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Describe the experiment that proves air occupies space. What happens when the plastic sheet is removed?</p>
+                <textarea id="q2-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn2" onclick="gradeAnswer(2, ['glass', 'water', 'space', 'empty', 'escape', 'bubbles'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp2" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">When an empty glass is pushed upside down into water, the water does not enter because the air inside takes up the space. When tilted or the sheet is removed, the air escapes as bubbles, making room for water to enter.</p>
+                    <button onclick="unlockNext(2)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success2" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part3" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Next, Kavya's mother brought out two balloons. She blew one up and tied it. She placed it on one side of a balance scale and placed the empty balloon on the other side. The inflated balloon was heavier! "Air has weight," her mother said. "That's why the inflated balloon is heavier than the empty one." Kavya was amazed. "So air is real—it takes up space and has weight!" 
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">The inflated balloon is heavier than the empty balloon. What does this prove? Does air have weight?</p>
+                <textarea id="q3-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn3" onclick="gradeAnswer(3, ['weight', 'mass', 'heavier', 'balance', 'yes', 'air'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp3" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">Yes, air has weight (mass). The experiment proves this because when air is added inside the balloon, it makes that side of the balance scale go down compared to the empty balloon.</p>
+                    <button onclick="unlockNext(3)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success3" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part4" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Kavya's mother then lit a candle and placed it in a shallow dish of water. She covered the candle with a glass. Kavya watched as the candle flickered and went out. At the same time, water rose up inside the glass! "What happened?" Kavya asked. "The candle needed oxygen from the air to burn," her mother explained. "When the oxygen was used up, the candle went out."
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Kavya watches a candle go out when covered with a glass. Why does this happen? What does this show about air and burning?</p>
+                <textarea id="q4-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn4" onclick="gradeAnswer(4, ['oxygen', 'burning', 'burn', 'used', 'fire', 'combustion'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp4" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">The experiment shows that oxygen in the air is essential for burning. When the glass covers the candle, it uses up all the trapped oxygen and then goes out.</p>
+                    <button onclick="unlockNext(4)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success4" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part5" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Kavya's mother then took her outside. "We breathe air all the time," she said. "When we inhale, we take in oxygen. When we exhale, we release carbon dioxide." Kavya took a deep breath. "So air is not just around us—it's inside us too!" Her mother smiled. "And not just us—all animals and plants need air. Plants use carbon dioxide to make food and release oxygen."
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Why do living organisms need air? What is the role of air in respiration and photosynthesis?</p>
+                <textarea id="q5-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn5" onclick="gradeAnswer(5, ['respiration', 'breathe', 'oxygen', 'carbon dioxide', 'photosynthesis', 'food'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp5" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">Living things need oxygen from the air for respiration (breathing to release energy). Plants use the carbon dioxide in the air to make food through a process called photosynthesis, releasing fresh oxygen back out.</p>
+                    <button onclick="unlockNext(5)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Finish Mission</button>
+                </div>
+                <div id="success5" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="partFinal" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 hidden fade-in text-center">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-4xl font-extrabold text-success mb-4">Mission Complete!</h2>
+            <p class="text-xl text-gray-600 mb-8 font-medium">Incredible work. You have mastered Air Around Us!</p>
+            <button onclick="window.location.href='physicsclass6.html'" class="bg-primary text-white font-extrabold text-2xl px-12 py-6 rounded-2xl hover:bg-blue-900 transition-transform shadow-xl hover:-translate-y-1">Return to Topic Menu</button>
+        </div>
+
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        let userProfile = null;
+        let userData = { points: 0, streak: 0, questions_attempted: 0, questions_correct: 0, questions_wrong: 0 };
+        const TOTAL_QUESTIONS = 5; 
+        const CURRENT_STORY_ID = 'story-physics-5';
+
+        async function loadUser() {
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return window.location.replace("login.html");
+
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                if (profile) {
+                    userProfile = profile;
+
+                    // THE BOUNCER
+                    const status = localStorage.getItem(CURRENT_STORY_ID + '_status');
+                    if (status !== 'started' && status !== 'completed') {
+                        if (profile.subscription_status === 'free' && (profile.daily_story_count || 0) >= 1) {
+                            alert("Bouncer: You have reached your free daily limit! Redirecting to dashboard.");
+                            window.location.replace("physicsclass6.html");
+                            return;
+                        } else {
+                            await supabase.from('profiles').update({ daily_story_count: (profile.daily_story_count || 0) + 1 }).eq('id', session.user.id);
+                            localStorage.setItem(CURRENT_STORY_ID + '_status', 'started');
+                        }
+                    }
+
+                    userData = { points: profile.points || 0, streak: profile.streak || 0, questions_attempted: profile.questions_attempted || 0, questions_correct: profile.questions_correct || 0, questions_wrong: profile.questions_wrong || 0 };
+                    document.getElementById('live-points').innerText = userData.points;
+                    document.getElementById('live-streak').innerText = userData.streak;
+                }
+                document.getElementById('story-body').classList.remove('secure-hide');
+            } catch (err) { console.error(err); }
+        }
+
+        loadUser();
+
+        async function checkAiDoubt() {
+            let aiUsed = userProfile.daily_ai_count || 0;
+            let maxDoubts = userProfile.subscription_status === 'premium' ? 1000 : 1;
+            
+            if (aiUsed >= maxDoubts) {
+                if (maxDoubts === 1) alert("You used your 1 free AI Doubt today! Subscribe to unlock 1000 daily doubts.");
+                else alert("You have reached your daily limit of 1000 AI Doubts!");
+                return;
+            }
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                // Database update moved to backend
+                window.location.href = "ai-chat.html"; 
+            } catch(e) { alert("Error connecting."); }
+        }
+
+        async function gradeAnswer(qNum, keywords) {
+            const inputField = document.getElementById(`q${qNum}-input`);
+            const btn = document.getElementById(`btn${qNum}`);
+            if (btn.disabled) return; 
+            
+            const answerText = inputField.value.toLowerCase().replace(/[^\w\s]/g, ''); 
+            if (answerText.trim() === "") { alert("Please type an answer first!"); return; }
+
+            btn.disabled = true; btn.innerText = "Grading..."; inputField.disabled = true;
+
+            let matchCount = 0;
+            keywords.forEach(kw => { if (answerText.includes(kw.toLowerCase())) matchCount++; });
+
+            const isCorrect = matchCount >= 1; 
+
+            userData.questions_attempted += 1;
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            if (isCorrect) {
+                userData.points += 100; userData.questions_correct += 1;
+                document.getElementById(`success${qNum}`).classList.remove('hidden');
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+                setTimeout(() => { unlockNext(qNum); }, 1500); 
+            } else {
+                userData.points = Math.max(0, userData.points - 10); userData.questions_wrong += 1;
+                document.getElementById(`exp${qNum}`).classList.remove('hidden');
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+            }
+        }
+
+        async function saveToDatabase(supabase) {
+            await supabase.from('profiles').update({ points: userData.points, questions_attempted: userData.questions_attempted, questions_correct: userData.questions_correct, questions_wrong: userData.questions_wrong }).eq('id', userProfile.id);
+        }
+
+        function unlockNext(currentQNum) {
+            document.getElementById(`btn${currentQNum}`).classList.add('hidden'); 
+            let nextPartNum = currentQNum + 1;
+            document.getElementById('progressBar').style.width = `${(currentQNum / TOTAL_QUESTIONS) * 100}%`;
+            
+            if (nextPartNum <= TOTAL_QUESTIONS) { 
+                document.getElementById(`part${nextPartNum}`).classList.remove('hidden'); 
+            } else { 
+                document.getElementById('partFinal').classList.remove('hidden'); 
+                localStorage.setItem(CURRENT_STORY_ID + '_status', 'completed'); 
+            }
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

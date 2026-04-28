@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry - Fibre to Fabric</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#6B21A8', accent: '#F97316', success: '#22C55E', cream: '#FFF7E6' } } } }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.8s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .secure-hide { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col secure-hide" id="story-body">
+
+    <header class="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center w-full">
+            <button onclick="window.location.href='chemistryclass6.html'" class="text-gray-500 hover:text-primary font-bold flex items-center transition-colors">
+                ← Back to Topics
+            </button>
+            <div class="flex items-center space-x-2">
+                <span class="bg-purple-100 text-purple-800 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full">Chemistry</span>
+                <span class="text-gray-400 font-bold text-sm">Mission 1</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto w-full px-6 py-10 fade-in">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-primary mb-4">Fibre to Fabric</h1>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 max-w-md mx-auto overflow-hidden">
+                <div id="progressBar" class="bg-success h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="flex justify-center space-x-4 md:space-x-8 mb-8">
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-orange-400 font-extrabold uppercase tracking-wider mb-1">Streak</span>
+                <div class="flex items-center text-orange-600 font-black bg-orange-50 border-2 border-orange-200 px-6 py-3 rounded-2xl shadow-md">
+                    <span class="mr-3 text-3xl md:text-4xl leading-none">🔥</span> <span id="live-streak">...</span>
+                </div>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-yellow-500 font-extrabold uppercase tracking-wider mb-1">Points</span>
+                <div class="flex items-center text-yellow-600 font-black bg-yellow-50 border-2 border-yellow-200 px-6 py-3 rounded-2xl shadow-md">
+                    <span class="mr-3 text-3xl md:text-4xl leading-none">🪙</span> <span id="live-points">...</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="part1" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Rani lived on a farm with her Aaji. The harvest festival was approaching, and Rani wanted a new, light, and airy kurta to wear while dancing. Aaji pointed to the sheep in the field and said, "We have plenty of wool," and then to a basket of fluffy, white cotton bolls, "and we have this. But wool makes me sweat in the sun, and these cotton bolls look like a tangled mess!" Rani frowned. She needed to turn the fluffy cotton bolls into a smooth fabric, but she didn't know the first step.
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Rani finds that wool is too warm for the festival weather. What is the first process she must do to separate the useful cotton fibres from the seeds inside the cotton bolls?</p>
+                <textarea id="q1-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn1" onclick="gradeAnswer(1, ['ginning', 'separate', 'seeds', 'roller', 'machine'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-purple-800 transition-colors">Submit Answer</button>
+
+                <div id="exp1" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">The first process is <strong>ginning</strong>. Ginning is the process of separating cotton fibres from their seeds. Without ginning, the fibres remain attached to the seeds and cannot be spun into yarn.</p>
+                    <button onclick="unlockNext(1)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success1" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part2" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Aaji laughed and showed Rani an old wooden machine. "First, we must do this," she said, feeding the cotton bolls between rollers to pull out the seeds. Soon, they had a big pile of clean, fluffy cotton fibres. "Now it looks like the cotton I see in the shop," Rani said, "but it's just a loose pile. How do we turn this puff into a strong, thin thread that we can actually sew?"
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Rani has a pile of clean cotton fibres. What is the process of turning these loose fibres into a strong, thin thread called?</p>
+                <textarea id="q2-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn2" onclick="gradeAnswer(2, ['spinning', 'twist', 'yarn', 'thread', 'charkha', 'takli'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-purple-800 transition-colors">Submit Answer</button>
+
+                <div id="exp2" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">The process is called <strong>spinning</strong>. Spinning involves taking loose fibres and twisting them together to form a long, continuous, and strong thread called yarn.</p>
+                    <button onclick="unlockNext(2)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success2" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part3" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Aaji brought out a takli (spindle). She showed Rani how to draw out the fibres and twist them together. Slowly, Rani learned the art of making a continuous thread. "Now we have yarn!" Rani exclaimed, holding up a spool of beautiful, hand-spun cotton thread. "But Aaji, my kurta is not made of thread; it is made of fabric. How do we turn this one long thread into a flat sheet of cloth that I can wear?"
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Rani has successfully made cotton yarn (thread). What is the name of the process (or the machine used) that interlaces two sets of yarns together to create fabric?</p>
+                <textarea id="q3-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn3" onclick="gradeAnswer(3, ['weaving', 'loom', 'interlace', 'warp', 'weft'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-purple-800 transition-colors">Submit Answer</button>
+
+                <div id="exp3" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">The process is called <strong>weaving</strong>, and it is often done on a <strong>loom</strong>. Weaving is the method of interlacing two sets of yarns (warp and weft) at right angles to form fabric.</p>
+                    <button onclick="unlockNext(3)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success3" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part4" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Aaji set up her handloom. She carefully arranged many lengthwise threads and then used a shuttle to pass a crosswise thread over and under them. Click-clack, click-clack—slowly, a beautiful, flat piece of cotton fabric began to appear. Rani was overjoyed. But as she touched it, the fabric felt rough and dull. "It worked!" Rani said, "but this fabric looks nothing like the colourful clothes in the market. It's so plain!"
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Rani's woven fabric is strong and flat, but it is dull and grey. What processes are done to the fabric after weaving to make it smooth, attractive, and colourful?</p>
+                <textarea id="q4-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn4" onclick="gradeAnswer(4, ['washing', 'bleaching', 'dyeing', 'finishing', 'ironing', 'color'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-purple-800 transition-colors">Submit Answer</button>
+
+                <div id="exp4" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">The processes are washing, bleaching, dyeing (adding color), and finishing (like ironing) to make the fabric smooth, crisp, and ready for stitching.</p>
+                    <button onclick="unlockNext(4)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success4" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part5" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Aaji took the fabric and washed it thoroughly to remove any dirt. Then, she dipped it into a pot of rich, red dye made from flowers. She hung it in the sun to dry. The final step was to iron it smooth. On the day of the festival, Rani wore the beautiful, red kurta. "My Aaji and I made it," she said proudly. "We started from the cotton bolls!" She had learned that making a simple piece of fabric involved many transforming steps.
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">List the entire journey of the fabric in order, from the plant in the field to Rani's final dress.</p>
+                <textarea id="q5-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn5" onclick="gradeAnswer(5, ['ginning', 'spinning', 'weaving', 'dyeing', 'stitching', 'bolls'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-purple-800 transition-colors">Submit Answer</button>
+
+                <div id="exp5" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">The journey is: Cotton bolls → Ginning (remove seeds) → Spinning (make yarn) → Weaving (make fabric) → Dyeing/Finishing → Stitching (make dress).</p>
+                    <button onclick="unlockNext(5)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Finish Mission</button>
+                </div>
+                <div id="success5" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="partFinal" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 hidden fade-in text-center">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-4xl font-extrabold text-success mb-4">Mission Complete!</h2>
+            <p class="text-xl text-gray-600 mb-8 font-medium">Incredible work. You have mastered Fibre to Fabric!</p>
+            <button onclick="window.location.href='chemistryclass6.html'" class="bg-primary text-white font-extrabold text-2xl px-12 py-6 rounded-2xl hover:bg-purple-800 transition-transform shadow-xl hover:-translate-y-1">Return to Topic Menu</button>
+        </div>
+
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        let userProfile = null;
+        let userData = { points: 0, streak: 0, questions_attempted: 0, questions_correct: 0, questions_wrong: 0 };
+        const TOTAL_QUESTIONS = 5; 
+        const CURRENT_STORY_ID = 'story-chem-1';
+
+        async function loadUser() {
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return window.location.replace("login.html");
+
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                if (profile) {
+                    userProfile = profile;
+
+                    const status = localStorage.getItem(CURRENT_STORY_ID + '_status');
+                    if (status !== 'started' && status !== 'completed') {
+                        if (profile.subscription_status === 'free' && (profile.daily_story_count || 0) >= 1) {
+                            alert("Bouncer: You have reached your free daily limit! Redirecting to dashboard.");
+                            window.location.replace("chemistryclass6.html");
+                            return;
+                        } else {
+                            await supabase.from('profiles').update({ daily_story_count: (profile.daily_story_count || 0) + 1 }).eq('id', session.user.id);
+                            localStorage.setItem(CURRENT_STORY_ID + '_status', 'started');
+                        }
+                    }
+
+                    userData = { points: profile.points || 0, streak: profile.streak || 0, questions_attempted: profile.questions_attempted || 0, questions_correct: profile.questions_correct || 0, questions_wrong: profile.questions_wrong || 0 };
+                    document.getElementById('live-points').innerText = userData.points;
+                    document.getElementById('live-streak').innerText = userData.streak;
+                }
+                document.getElementById('story-body').classList.remove('secure-hide');
+            } catch (err) { console.error(err); }
+        }
+
+        loadUser();
+
+        async function checkAiDoubt() {
+            let aiUsed = userProfile.daily_ai_count || 0;
+            let maxDoubts = userProfile.subscription_status === 'premium' ? 1000 : 1;
+            
+            if (aiUsed >= maxDoubts) {
+                if (maxDoubts === 1) alert("You used your 1 free AI Doubt today! Subscribe to unlock 1000 daily doubts.");
+                else alert("You have reached your daily limit of 1000 AI Doubts!");
+                return;
+            }
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                // Database update moved to backend
+                window.location.href = "ai-chat.html"; 
+            } catch(e) { alert("Error connecting."); }
+        }
+
+        async function gradeAnswer(qNum, keywords) {
+            const inputField = document.getElementById(`q${qNum}-input`);
+            const btn = document.getElementById(`btn${qNum}`);
+            if (btn.disabled) return; 
+            
+            const answerText = inputField.value.toLowerCase().replace(/[^\w\s]/g, ''); 
+            if (answerText.trim() === "") { alert("Please type an answer first!"); return; }
+
+            btn.disabled = true; btn.innerText = "Grading..."; inputField.disabled = true;
+
+            let matchCount = 0;
+            keywords.forEach(kw => { if (answerText.includes(kw.toLowerCase())) matchCount++; });
+
+            const isCorrect = matchCount >= 1; 
+
+            userData.questions_attempted += 1;
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            if (isCorrect) {
+                userData.points += 100; userData.questions_correct += 1;
+                document.getElementById(`success${qNum}`).classList.remove('hidden');
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+                setTimeout(() => { unlockNext(qNum); }, 1500); 
+            } else {
+                userData.points = Math.max(0, userData.points - 10); userData.questions_wrong += 1;
+                document.getElementById(`exp${qNum}`).classList.remove('hidden');
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+            }
+        }
+
+        async function saveToDatabase(supabase) {
+            await supabase.from('profiles').update({ points: userData.points, questions_attempted: userData.questions_attempted, questions_correct: userData.questions_correct, questions_wrong: userData.questions_wrong }).eq('id', userProfile.id);
+        }
+
+        function unlockNext(currentQNum) {
+            document.getElementById(`btn${currentQNum}`).classList.add('hidden'); 
+            let nextPartNum = currentQNum + 1;
+            document.getElementById('progressBar').style.width = `${(currentQNum / TOTAL_QUESTIONS) * 100}%`;
+            
+            if (nextPartNum <= TOTAL_QUESTIONS) { 
+                document.getElementById(`part${nextPartNum}`).classList.remove('hidden'); 
+            } else { 
+                document.getElementById('partFinal').classList.remove('hidden'); 
+                localStorage.setItem(CURRENT_STORY_ID + '_status', 'completed'); 
+            }
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

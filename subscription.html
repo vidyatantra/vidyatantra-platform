@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade to Premium - Vidyatantra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1E3A8A', accent: '#F97316', success: '#22C55E', premium: '#8B5CF6' } } } }
+    </script>
+    <style>
+        body { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .premium-bg { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans m-0 p-0 min-h-screen flex flex-col">
+
+    <header class="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-20">
+        <div class="max-w-[90rem] mx-auto flex justify-between items-center">
+            <button onclick="goBack()" class="text-gray-500 hover:text-primary font-bold flex items-center transition-colors text-lg">
+                ← Back to Dashboard
+            </button>
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full overflow-hidden shadow-sm border-2 border-accent flex-shrink-0 bg-white">
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-contain p-1" onerror="this.style.display='none';">
+                </div>
+                <span class="text-xl font-extrabold text-primary tracking-tight hidden sm:block">Vidyatantra</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl mx-auto w-full px-6 py-12" id="pricing-ui">
+        <div class="text-center mb-12">
+            <span class="bg-purple-100 text-purple-700 font-black tracking-widest uppercase px-4 py-1 rounded-full text-sm mb-4 inline-block">Pro Plan</span>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Unlock Unlimited Learning</h1>
+            <p class="text-gray-500 text-xl font-medium max-w-2xl mx-auto">Join thousands of students mastering concepts through interactive stories and AI-powered guidance.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm flex flex-col opacity-75">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Free Tier</h3>
+                <p class="text-gray-500 mb-6 border-b border-gray-100 pb-6">For casual learners.</p>
+                <div class="text-4xl font-black text-gray-900 mb-6">₹0 <span class="text-lg text-gray-400 font-medium">/ forever</span></div>
+                <ul class="space-y-4 mb-8 flex-grow text-gray-600 font-medium">
+                    <li class="flex items-center"><span class="text-gray-400 mr-3">✓</span> 1 Story Mission per day</li>
+                    <li class="flex items-center"><span class="text-gray-400 mr-3">✓</span> 1 AI Doubt per day</li>
+                    <li class="flex items-center"><span class="text-gray-400 mr-3">✓</span> Basic Streak tracking</li>
+                </ul>
+                <button disabled class="w-full bg-gray-100 text-gray-500 font-bold py-4 rounded-xl cursor-not-allowed">Your Current Plan</button>
+            </div>
+
+            <div class="premium-bg rounded-3xl p-8 border-4 border-purple-300 shadow-2xl text-white flex flex-col relative transform scale-105 z-10">
+                <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-black uppercase tracking-widest px-4 py-1 rounded-bl-xl rounded-tr-2xl shadow-sm">Limited Time Offer</div>
+                <h3 class="text-2xl font-bold mb-2">Premium</h3>
+                <p class="text-indigo-100 mb-6 border-b border-indigo-400/30 pb-6">For dedicated achievers.</p>
+                
+                <div class="text-4xl font-black mb-6">
+                    <span class="text-2xl text-indigo-300 line-through mr-2 font-bold decoration-2 opacity-80">₹250</span>₹129 <span class="text-lg text-indigo-200 font-medium">/ month</span>
+                </div>
+                
+                <ul class="space-y-4 mb-8 flex-grow font-medium">
+                    <li class="flex items-center"><span class="bg-white text-success rounded-full w-5 h-5 flex items-center justify-center mr-3 text-xs shadow-sm">✓</span> <strong>Unlimited</strong> Daily Story Missions</li>
+                    <li class="flex items-center"><span class="bg-white text-success rounded-full w-5 h-5 flex items-center justify-center mr-3 text-xs shadow-sm">✓</span> <strong>1,000 AI Doubts</strong>   every month</li>
+                    <li class="flex items-center"><span class="bg-white text-success rounded-full w-5 h-5 flex items-center justify-center mr-3 text-xs shadow-sm">✓</span> Access to all Subjects & Classes</li>
+                </ul>
+                <button id="pay-btn" onclick="startSecurePayment()" class="w-full bg-white text-premium font-black text-lg py-4 rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center justify-center">
+                    <span>Pay with PhonePe / UPI</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div id="success-ui" class="hidden max-w-lg mx-auto w-full px-6 py-20 text-center mt-10">
+        <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-green-500 text-5xl mx-auto mb-6 border-4 border-green-500 shadow-lg">✓</div>
+        <h3 class="text-4xl font-black text-gray-900 mb-4">Payment Successful!</h3>
+        <p class="text-gray-500 text-xl font-medium mb-10">Your Premium Subscription is now active for 1 month. You have unlimited access.</p>
+        <button onclick="goBack()" class="w-full bg-[#5f259f] text-white font-black text-xl py-5 rounded-2xl shadow-xl hover:bg-purple-900 transition-colors">Start Learning Now →</button>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        let sessionData = null;
+        let userProfile = null;
+        const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/razorpay-checkout`;
+
+        async function checkAuth() {
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return window.location.href = "login.html";
+            sessionData = session;
+            
+            const { data: profile } = await supabase.from('profiles').select('class, name, subscription_status').eq('id', session.user.id).single();
+            userProfile = profile;
+
+            if (profile && profile.subscription_status === 'premium') {
+                document.getElementById('pricing-ui').innerHTML = `<div class="text-center py-20"><h2 class="text-3xl font-bold text-gray-800">You are already Premium! 🚀</h2><button onclick="goBack()" class="mt-6 bg-[#5f259f] text-white font-bold py-3 px-8 rounded-xl">Go to Dashboard</button></div>`;
+            }
+        }
+        checkAuth();
+
+        function goBack() {
+            let userClass = userProfile?.class || '6';
+            window.location.href = `class${userClass}-dashboard.html`;
+        }
+
+        async function startSecurePayment() {
+            const btn = document.getElementById('pay-btn');
+            btn.innerHTML = `Loading Secure Checkout...`;
+            btn.disabled = true;
+
+            try {
+                const orderResponse = await fetch(EDGE_FUNCTION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionData.access_token}` },
+                    body: JSON.stringify({ action: 'create_order' })
+                });
+
+                const orderData = await orderResponse.json();
+                
+                // If it fails because you haven't added the keys yet, it will alert you.
+                if (orderData.error) throw new Error(orderData.error);
+
+                const options = {
+                    "key": "RZP_TEST_SD3JW8BIV1 S9TY", // <--- PASTE REAL KEY ID HERE LATER
+                    "amount": orderData.amount,
+                    "currency": "INR",
+                    "name": "Vidyatantra Premium",
+                    "description": "1 Month Unlimited Access",
+                    "image": "logo.png",
+                    "order_id": orderData.id,
+                    "handler": async function (response) {
+                        btn.innerHTML = `Verifying secure payment...`;
+                        
+                        const verifyResponse = await fetch(EDGE_FUNCTION_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionData.access_token}` },
+                            body: JSON.stringify({
+                                action: 'verify_payment',
+                                payment_data: {
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature
+                                }
+                            })
+                        });
+
+                        const verifyData = await verifyResponse.json();
+                        if (verifyData.success) {
+                            document.getElementById('pricing-ui').classList.add('hidden');
+                            document.getElementById('success-ui').classList.remove('hidden');
+                        } else {
+                            alert("Payment verification failed. Please contact support.");
+                            btn.innerHTML = `Try Again`;
+                            btn.disabled = false;
+                        }
+                    },
+                    "prefill": {
+                        "name": userProfile?.name || "Student",
+                        "email": sessionData.user.email
+                    },
+                    "theme": { "color": "#7c3aed" }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.on('payment.failed', function (response){
+                    alert("Payment Failed. Please try again.");
+                    btn.innerHTML = `Pay with PhonePe / UPI`;
+                    btn.disabled = false;
+                });
+                rzp.open();
+
+            } catch (err) {
+                console.error(err);
+                alert("Payment gateway not initialized yet. Waiting for client API keys.");
+                btn.innerHTML = `Pay with PhonePe / UPI`;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

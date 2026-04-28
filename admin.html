@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidyatantra Admin Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#0F172A', accent: '#3B82F6', success: '#10B981' } } } }
+    </script>
+    <style>.secure-hide { display: none; }</style>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen secure-hide" id="admin-body">
+
+    <header class="bg-primary text-white px-8 py-4 shadow-lg flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <span class="text-3xl">🛡️</span>
+            <h1 class="text-2xl font-black tracking-widest uppercase">Admin Command Center</h1>
+        </div>
+        <div class="flex items-center space-x-6">
+            <button onclick="fetchUsers()" class="text-gray-300 hover:text-white flex items-center font-bold">
+                🔄 Refresh Data
+            </button>
+            <button onclick="handleLogout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-bold shadow-md transition-colors">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-8 py-10">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-accent">
+                <p class="text-gray-500 font-bold text-sm uppercase tracking-wider">Total Users</p>
+                <p class="text-4xl font-black text-primary mt-2" id="stat-total">0</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-purple-500">
+                <p class="text-gray-500 font-bold text-sm uppercase tracking-wider">Premium Users</p>
+                <p class="text-4xl font-black text-purple-600 mt-2" id="stat-premium">0</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-success">
+                <p class="text-gray-500 font-bold text-sm uppercase tracking-wider">Total AI Doubts Asked</p>
+                <p class="text-4xl font-black text-success mt-2" id="stat-doubts">0</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 flex items-center border border-gray-200 focus-within:border-accent transition-colors">
+            <span class="text-2xl mr-4">🔍</span>
+            <input type="text" id="searchInput" oninput="filterUsers()" placeholder="Search users by Name, Email, or ID..." 
+                   class="w-full text-lg outline-none font-medium text-gray-700">
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-500 font-bold text-sm uppercase tracking-wider border-b border-gray-200">
+                        <th class="p-4">Name</th>
+                        <th class="p-4">Class</th>
+                        <th class="p-4">Tier</th>
+                        <th class="p-4">Points</th>
+                        <th class="p-4">Streak</th>
+                        <th class="p-4 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table-body" class="divide-y divide-gray-100">
+                    <tr><td colspan="6" class="p-8 text-center text-gray-400 font-bold">⏳ Loading users from database...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="userModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-primary p-6 text-white flex justify-between items-center shrink-0">
+                <h2 class="text-2xl font-black flex items-center"><span class="mr-3 text-3xl">👤</span> User Details</h2>
+                <button onclick="closeModal()" class="text-white hover:text-red-400 font-bold text-3xl leading-none">&times;</button>
+            </div>
+            <div class="p-8 overflow-y-auto" id="modal-content">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        let allUsers = []; 
+
+        // --- 1. THE BOUNCER ---
+        async function checkAdminAccess() {
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) return window.location.replace("login.html");
+
+            const { data: profile, error } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+            
+            if (error || profile.role !== 'admin') {
+                alert("SECURITY ALERT: You do not have permission to access the Command Center.");
+                window.location.replace("login.html");
+                return;
+            }
+
+            document.getElementById('admin-body').classList.remove('secure-hide');
+            fetchUsers(); 
+        }
+
+        // --- 2. FETCH ALL USERS (CRASH-PROOF VERSION) ---
+        async function fetchUsers() {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-accent font-bold">⏳ Fetching data from Supabase...</td></tr>';
+            
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            // NOTE: I removed .order('created_at') to ensure it doesn't crash if that column is missing.
+            const { data, error } = await supabase.from('profiles').select('*');
+            
+            if (error) {
+                console.error("Supabase Error:", error);
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-500 font-bold">❌ Error loading data. Open browser console to see the exact error.</td></tr>`;
+                return;
+            }
+
+            allUsers = data || [];
+            updateStats();
+            renderTable(allUsers);
+        }
+
+        // --- 3. RENDER TABLE ---
+        function renderTable(usersToDisplay) {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = '';
+
+            if (usersToDisplay.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-400 font-bold">No users found in database.</td></tr>';
+                return;
+            }
+
+            usersToDisplay.forEach(user => {
+                const isPremium = user.subscription_status === 'premium';
+                const badge = isPremium 
+                    ? `<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider">Premium</span>` 
+                    : `<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider">Free</span>`;
+
+                const nameDisplay = user.name || user.email || 'Unknown User';
+                const initial = nameDisplay.charAt(0).toUpperCase();
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-blue-50 transition-colors cursor-pointer";
+                tr.onclick = () => openModal(user.id);
+                
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-gray-800 flex items-center">
+                        <div class="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold mr-3 text-xs flex-shrink-0">
+                            ${initial}
+                        </div>
+                        <span class="truncate">${nameDisplay}</span>
+                    </td>
+                    <td class="p-4 font-medium text-gray-600">Class ${user.class || 'N/A'}</td>
+                    <td class="p-4">${badge}</td>
+                    <td class="p-4 font-bold text-yellow-600">${user.points || 0}</td>
+                    <td class="p-4 font-bold text-orange-500">${user.streak || 0} 🔥</td>
+                    <td class="p-4 text-center">
+                        <button class="bg-gray-800 hover:bg-black text-white text-xs font-bold px-4 py-2 rounded-lg transition-transform hover:scale-105">
+                            View
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- 4. LIVE SEARCH FUNCTIONALITY ---
+        function filterUsers() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (query === "") {
+                renderTable(allUsers);
+                return;
+            }
+
+            const filtered = allUsers.filter(user => {
+                const nameStr = (user.name || "").toLowerCase();
+                const emailStr = (user.email || "").toLowerCase();
+                const idStr = (user.id || "").toLowerCase();
+                
+                return nameStr.includes(query) || emailStr.includes(query) || idStr.includes(query);
+            });
+            
+            renderTable(filtered);
+        }
+
+        // --- 5. UPDATE STATS ---
+        function updateStats() {
+            document.getElementById('stat-total').innerText = allUsers.length;
+            const premiumCount = allUsers.filter(u => u.subscription_status === 'premium').length;
+            document.getElementById('stat-premium').innerText = premiumCount;
+            
+            const totalDoubts = allUsers.reduce((sum, user) => sum + (user.daily_ai_count || 0), 0);
+            document.getElementById('stat-doubts').innerText = totalDoubts;
+        }
+
+        // --- 6. MODAL (FULL DETAILS) ---
+        function openModal(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            const content = document.getElementById('modal-content');
+            let detailsHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+            
+            const sortedKeys = Object.keys(user).sort();
+            
+            for (const key of sortedKeys) {
+                const value = user[key];
+                const displayValue = Array.isArray(value) ? value.join(', ') : value;
+                
+                detailsHtml += `
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">${key.replace(/_/g, ' ')}</p>
+                        <p class="font-medium text-gray-800 break-all">${displayValue !== null && displayValue !== '' ? displayValue : '<span class="text-gray-300 italic">Empty/Null</span>'}</p>
+                    </div>
+                `;
+            }
+            detailsHtml += '</div>';
+
+            content.innerHTML = detailsHtml;
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
+        document.getElementById('userModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // --- LOGOUT ---
+        async function handleLogout() {
+            localStorage.clear();
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            await supabase.auth.signOut();
+            window.location.href = "login.html";
+        }
+
+        checkAdminAccess();
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths - Visualising Solid Shapes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#166534', accent: '#EAB308', success: '#22C55E', cream: '#F0FDF4' } } } }</script>
+    <style>.fade-in { animation: fadeIn 0.8s ease-in-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } .secure-hide { display: none; }</style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col secure-hide" id="story-body">
+    <header class="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center w-full">
+            <button onclick="window.location.href='mathsclass8.html'" class="text-gray-500 hover:text-primary font-bold flex items-center transition-colors">← Back to Topics</button>
+            <div class="flex items-center space-x-2"><span class="bg-green-100 text-green-800 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full">Maths</span><span class="text-gray-400 font-bold text-sm">Mission 10</span></div>
+        </div>
+    </header>
+    <main class="flex-grow max-w-4xl mx-auto w-full px-6 py-10 fade-in">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-primary mb-4">The Digital Sculptor</h1>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 max-w-md mx-auto overflow-hidden"><div id="progressBar" class="bg-success h-full rounded-full transition-all duration-500" style="width: 0%"></div></div>
+        </div>
+        <div class="flex justify-center space-x-4 md:space-x-8 mb-8">
+            <div class="flex flex-col items-center"><span class="text-xs text-orange-400 font-extrabold uppercase tracking-wider mb-1">Streak</span><div class="flex items-center text-orange-600 font-black bg-orange-50 border-2 border-orange-200 px-6 py-3 rounded-2xl shadow-md"><span class="mr-3 text-3xl md:text-4xl leading-none">🔥</span> <span id="live-streak">...</span></div></div>
+            <div class="flex flex-col items-center"><span class="text-xs text-green-600 font-extrabold uppercase tracking-wider mb-1">Points</span><div class="flex items-center text-green-700 font-black bg-green-50 border-2 border-green-200 px-6 py-3 rounded-2xl shadow-md"><span class="mr-3 text-3xl md:text-4xl leading-none">🪙</span> <span id="live-points">...</span></div></div>
+        </div>
+
+        <div id="part1" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">An artist was creating a 3D model of a crystal. She started by drawing the flat 2D shapes that would make up the outside shell of her crystal.</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-green-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4">What do we call the flat polygonal surfaces of a 3D solid?</p>
+                <textarea id="q1-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn1" onclick="gradeAnswer(1, [['faces'], ['face']])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-green-900 transition-colors">Submit Answer</button>
+                <div id="exp1" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm">The flat surfaces that enclose a solid shape are called its faces.</p><button onclick="unlockNext(1)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success1" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-300 rounded-2xl text-center"><p class="font-bold text-green-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part2" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">She carefully connected the lines where two faces met. Then, she placed small dots precisely where three or more of those lines intersected to form sharp corners.</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-green-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4">What is the mathematical name for the sharp corners where the edges of a solid meet?</p>
+                <textarea id="q2-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn2" onclick="gradeAnswer(2, [['vertices'], ['vertex']])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-green-900 transition-colors">Submit Answer</button>
+                <div id="exp2" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm">The points or corners where the edges meet are called vertices (singular: vertex).</p><button onclick="unlockNext(2)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success2" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-300 rounded-2xl text-center"><p class="font-bold text-green-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part3" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">Before she finalized the 3D model, her computer ran a quick math check. It added the number of faces and vertices, subtracted the edges, and checked if the answer was 2.</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-green-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4">What is the name of this famous formula: $F + V - E = 2$?</p>
+                <textarea id="q3-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn3" onclick="gradeAnswer(3, [['euler', 'formula'], ['euler', 'rule']])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-green-900 transition-colors">Submit Answer</button>
+                <div id="exp3" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm">This is known as Euler's formula, which holds true for any polyhedron.</p><button onclick="unlockNext(3)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success3" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-300 rounded-2xl text-center"><p class="font-bold text-green-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part4" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">The computer recognized the shape as a valid 3D solid because it was entirely made up of flat polygonal faces, with no curves or cylinders.</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-green-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4">What do we call a 3D solid that is made up exclusively of polygonal faces?</p>
+                <textarea id="q4-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn4" onclick="gradeAnswer(4, [['polyhedron'], ['polyhedra']])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-green-900 transition-colors">Submit Answer</button>
+                <div id="exp4" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm">A solid bound entirely by polygons is called a polyhedron. (Spheres and cones are not polyhedrons because they have curved surfaces).</p><button onclick="unlockNext(4)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success4" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-300 rounded-2xl text-center"><p class="font-bold text-green-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part5" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">She noticed her shape had two identical, parallel bases at the top and bottom, and all the side faces were parallelograms connecting them.</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-green-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4">What specific type of polyhedron has congruent parallel bases and parallelogram lateral faces?</p>
+                <textarea id="q5-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn5" onclick="gradeAnswer(5, [['prism']])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-green-900 transition-colors">Submit Answer</button>
+                <div id="exp5" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm">This is the definition of a prism. (A pyramid, on the other hand, has one base and triangular faces meeting at a point).</p><button onclick="unlockNext(5)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Finish Mission</button></div>
+                <div id="success5" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-300 rounded-2xl text-center"><p class="font-bold text-green-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="partFinal" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 hidden fade-in text-center"><div class="text-6xl mb-4">🏆</div><h2 class="text-4xl font-extrabold text-success mb-4">Mission Complete!</h2><p class="text-xl text-gray-600 mb-8 font-medium">You've mastered Visualising Solid Shapes!</p><button onclick="window.location.href='mathsclass8.html'" class="bg-primary text-white font-extrabold text-2xl px-12 py-6 rounded-2xl hover:bg-green-900 transition-transform shadow-xl hover:-translate-y-1">Return to Topic Menu</button></div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co'; const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        let userProfile = null; let userData = { points: 0, streak: 0, questions_attempted: 0, questions_correct: 0, questions_wrong: 0 }; const TOTAL_QUESTIONS = 5; 
+        const CURRENT_STORY_ID = 'story-maths8-10';
+
+        async function loadUser() {
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return window.location.replace("login.html");
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                if (profile) {
+                    userProfile = profile;
+                    const status = localStorage.getItem(CURRENT_STORY_ID + '_status');
+                    if (status !== 'started' && status !== 'completed') {
+                        if (profile.subscription_status === 'free' && (profile.daily_story_count || 0) >= 1) {
+                            alert("Bouncer: You have reached your free daily limit! Redirecting to dashboard."); window.location.replace("mathsclass8.html"); return;
+                        } else {
+                            await supabase.from('profiles').update({ daily_story_count: (profile.daily_story_count || 0) + 1 }).eq('id', session.user.id); localStorage.setItem(CURRENT_STORY_ID + '_status', 'started');
+                        }
+                    }
+                    userData = { points: profile.points || 0, streak: profile.streak || 0, questions_attempted: profile.questions_attempted || 0, questions_correct: profile.questions_correct || 0, questions_wrong: profile.questions_wrong || 0 };
+                    document.getElementById('live-points').innerText = userData.points; document.getElementById('live-streak').innerText = userData.streak;
+                }
+                document.getElementById('story-body').classList.remove('secure-hide');
+            } catch (err) { console.error(err); }
+        }
+        loadUser();
+
+        async function checkAiDoubt() {
+            let aiUsed = userProfile.daily_ai_count || 0; let maxDoubts = userProfile.subscription_status === 'premium' ? 1000 : 1;
+            if (aiUsed >= maxDoubts) { alert("You have reached your limit of AI Doubts!"); return; }
+            try { const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // Database update moved to backend window.location.href = "ai-chat.html"; } catch(e) { alert("Error connecting."); }
+        }
+
+        async function gradeAnswer(qNum, requiredPairs) {
+            const inputField = document.getElementById(`q${qNum}-input`); const btn = document.getElementById(`btn${qNum}`);
+            if (btn.disabled) return; 
+            const answerText = inputField.value.toLowerCase().replace(/[^\w\s]/g, ''); 
+            if (answerText.trim() === "") { alert("Please type an answer first!"); return; }
+            btn.disabled = true; btn.innerText = "Grading..."; inputField.disabled = true;
+
+            let isCorrect = false;
+            if (typeof requiredPairs[0] === 'string' && !Array.isArray(requiredPairs[0])) {
+                let matchCount = 0; requiredPairs.forEach(kw => { if (answerText.includes(kw.toLowerCase())) matchCount++; });
+                isCorrect = matchCount >= 1;
+            } else {
+                for (let i = 0; i < requiredPairs.length; i++) {
+                    let pair = requiredPairs[i]; let pairMatched = true;
+                    for (let j = 0; j < pair.length; j++) { if (!answerText.includes(pair[j].toLowerCase())) { pairMatched = false; break; } }
+                    if (pairMatched) { isCorrect = true; break; }
+                }
+            }
+
+            userData.questions_attempted += 1; const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            if (isCorrect) {
+                userData.points += 100; userData.questions_correct += 1;
+                document.getElementById(`success${qNum}`).classList.remove('hidden'); document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase); setTimeout(() => { unlockNext(qNum); }, 1500); 
+            } else {
+                userData.points = Math.max(0, userData.points - 10); userData.questions_wrong += 1;
+                document.getElementById(`exp${qNum}`).classList.remove('hidden'); document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+            }
+        }
+
+        async function saveToDatabase(supabase) { await supabase.from('profiles').update({ points: userData.points, questions_attempted: userData.questions_attempted, questions_correct: userData.questions_correct, questions_wrong: userData.questions_wrong }).eq('id', userProfile.id); }
+
+        function unlockNext(currentQNum) {
+            document.getElementById(`btn${currentQNum}`)?.classList.add('hidden'); 
+            let nextPartNum = currentQNum + 1; document.getElementById('progressBar').style.width = `${(currentQNum / TOTAL_QUESTIONS) * 100}%`;
+            if (nextPartNum <= TOTAL_QUESTIONS) { document.getElementById(`part${nextPartNum}`).classList.remove('hidden'); } else { document.getElementById('partFinal').classList.remove('hidden'); localStorage.setItem(CURRENT_STORY_ID + '_status', 'completed'); }
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidyatantra - Story-Based Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1E3A8A', accent: '#F97316', success: '#22C55E', cream: '#FFF7E6' } } } }
+    </script>
+    <style>
+        /* Pure CSS Animations */
+        @keyframes gentleZoom {
+            0% { transform: scale(0.95); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: scale(1.05); }
+        }
+        .animate-zoom { animation: gentleZoom 3.5s ease-out forwards; }
+        .fade-out { opacity: 0; transition: opacity 0.6s ease-in-out; }
+    </style>
+</head>
+<body class="bg-cream font-sans m-0 p-0 overflow-x-hidden flex flex-col min-h-screen relative">
+
+    <div id="splash-screen" class="fixed inset-0 bg-[#F05A28] flex items-center justify-center z-50">
+        <img src="splash.png" alt="Vidyatantra Splash Screen" class="max-w-full max-h-full object-contain animate-zoom" onerror="this.style.display='none';" />
+    </div>
+
+    <script>
+        setTimeout(() => {
+            const splash = document.getElementById("splash-screen");
+            splash.classList.add("fade-out"); 
+            setTimeout(() => { splash.style.display = "none"; }, 600); 
+        }, 3000);
+    </script>
+
+    <div id="home-screen" class="flex-grow flex flex-col">
+        
+        <header class="flex justify-between items-center p-6 max-w-7xl mx-auto w-full">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-accent flex-shrink-0 bg-white">
+                <img src="logo.png" alt="Vidyatantra Logo" class="w-full h-full object-contain p-1">              </div>
+                <span class="text-3xl font-extrabold text-primary tracking-tight">Vidyatantra</span>
+            </div>
+            <div class="flex space-x-4 items-center">
+                <button onclick="window.location.href='login.html'" class="text-primary font-bold text-lg hover:text-accent px-4 py-2 transition-colors">Login</button>
+                <button onclick="window.location.href='register.html'" class="bg-primary text-cream font-bold text-lg px-8 py-3 rounded-2xl shadow-lg hover:bg-blue-900 transition-transform hover:-translate-y-1">Register</button>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center justify-center text-center px-6 max-w-5xl mx-auto py-10 w-full">
+            <div class="bg-white p-10 md:p-16 rounded-[3rem] shadow-xl border border-blue-50 w-full relative overflow-hidden">
+                <div class="absolute top-[-10%] right-[-5%] w-64 h-64 bg-orange-50 rounded-full blur-3xl -z-10"></div>
+                <div class="absolute bottom-[-10%] left-[-5%] w-64 h-64 bg-blue-50 rounded-full blur-3xl -z-10"></div>
+
+                <h2 class="text-5xl md:text-7xl font-extrabold text-primary mb-6 leading-tight">
+                    Learn the concept. <br/> <span class="text-accent">Live the story.</span>
+                </h2>
+                <p class="text-xl md:text-3xl text-gray-600 mb-12 italic font-medium">"Stories that build thinkers, not memorizers."</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-16">
+                    <div class="bg-cream p-6 rounded-3xl border border-orange-100 hover:shadow-md transition-shadow">
+                        <h3 class="text-success font-bold text-xl mb-2">✦ Interactive</h3>
+                        <p class="text-primary">Questions inside the story keep you actively engaged.</p>
+                    </div>
+                    <div class="bg-cream p-6 rounded-3xl border border-orange-100 hover:shadow-md transition-shadow">
+                        <h3 class="text-accent font-bold text-xl mb-2">✦ AI Support</h3>
+                        <p class="text-primary">Instant doubt clarification exactly when you need it.</p>
+                    </div>
+                    <div class="bg-cream p-6 rounded-3xl border border-orange-100 hover:shadow-md transition-shadow">
+                        <h3 class="text-primary font-bold text-xl mb-2">✦ Fun Learning</h3>
+                        <p class="text-primary">Master Class 6-8 concepts through epic adventures.</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-4">
+                    <button id="continueBtn" onclick="handleContinue()" class="bg-success text-white font-extrabold text-2xl md:text-3xl px-16 py-6 rounded-[2.5rem] shadow-lg hover:bg-green-600 transition-all hover:-translate-y-1 flex items-center space-x-4">
+                        <span>Continue</span><span class="text-4xl leading-none">→</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="w-full py-8 mt-12 border-t border-gray-200 bg-cream">
+            <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-gray-500 font-medium text-sm">
+                <p>&copy; 2026 Vidyatantra. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="privacy.html" target="_blank" class="hover:text-primary transition-colors">Privacy Policy</a>
+                    <a href="mailto:support.vidyatantra@gmail.com" class="hover:text-primary transition-colors">Contact Us</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        async function handleContinue() {
+            const btn = document.getElementById('continueBtn');
+            btn.innerHTML = '<span>Checking...</span>';
+            btn.disabled = true;
+
+            try {
+                if (!window.supabase) throw new Error("Supabase library failed to load. Please check your internet connection.");
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                
+                // FIXED: If they are not logged in, teleport them to the login page immediately.
+                if (sessionError || !session) {
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                // If they are logged in, find out what class they are in.
+                const userId = session.user.id;
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('subscription_status, subscription_end_date, class')
+                    .eq('id', userId)
+                    .single();
+
+                // Manage premium expiration
+                if (profile && profile.subscription_status === 'premium' && profile.subscription_end_date) {
+                    const currentDate = new Date();
+                    const expiryDate = new Date(profile.subscription_end_date);
+                    if (currentDate > expiryDate) {
+                        await supabase.from('profiles').update({ subscription_status: 'free', subscription_end_date: null }).eq('id', userId);
+                    }
+                }
+                
+                // FIXED: Teleport to the correct dashboard (Defaults safely to Class 6 now!)
+                if (profile && profile.class === '7') {
+                    window.location.href = "class7-dashboard.html";
+                } else if (profile && profile.class === '8') {
+                    window.location.href = "class8-dashboard.html";
+                } else {
+                    window.location.href = "class6-dashboard.html"; 
+                }
+
+            } catch (err) {
+                // If ANYTHING fails, default safely to login page instead of breaking
+                console.error("System Error: " + err.message);
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+</body>
+</html>

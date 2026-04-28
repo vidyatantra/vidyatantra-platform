@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Vidyatantra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1E3A8A', accent: '#F97316', success: '#22C55E', cream: '#FFF7E6' } } } }
+    </script>
+    <style>
+        body { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-cream min-h-screen flex items-center justify-center p-6 py-12">
+    <div class="bg-white p-10 rounded-[2.5rem] shadow-xl w-full max-w-2xl border border-blue-50 relative">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-extrabold text-primary">Create Your Account</h2>
+            <p class="text-gray-500 mt-2">Start your story-based learning journey today.</p>
+        </div>
+
+        <div id="errorBox" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm font-medium text-center"></div>
+
+        <form id="registerForm" class="grid grid-cols-1 md:grid-cols-2 gap-5" onsubmit="event.preventDefault(); handleRegister();">
+            
+            <div class="space-y-5">
+                <div><label class="block text-primary font-bold mb-2">Full Name</label><input type="text" id="name" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50"></div>
+                
+                <div><label class="block text-primary font-bold mb-2">Email</label><input type="email" id="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50"></div>
+                
+                <div>
+                    <label class="block text-primary font-bold mb-2">Phone Number</label>
+                    <input type="tel" id="phone" required placeholder="10-digit mobile number" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50">
+                </div>
+
+                <div><label class="block text-primary font-bold mb-2">School Name</label><input type="text" id="school" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50"></div>
+            </div>
+
+            <div class="space-y-5">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-primary font-bold mb-2">Class</label>
+                        <select id="class" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50">
+                            <option value="6">Class 6</option>
+                            <option value="7">Class 7</option>
+                            <option value="8">Class 8</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-primary font-bold mb-2">City</label><input type="text" id="city" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50"></div>
+                </div>
+                <div><label class="block text-primary font-bold mb-2">Password</label><input type="password" id="password" required minlength="6" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50"></div>
+                <div><label class="block text-primary font-bold mb-2">Confirm Password</label><input type="password" id="confirmPassword" required minlength="6" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50"></div>
+            </div>
+
+            <div class="col-span-1 md:col-span-2 mt-2">
+                <label class="flex items-center space-x-3 cursor-pointer">
+                    <input type="checkbox" id="termsBox" required class="w-5 h-5 accent-primary border-gray-300 rounded cursor-pointer">
+                    <span class="text-gray-600 font-medium">I agree to the <a href="privacy.html" target="_blank" class="text-accent hover:underline font-bold">Privacy Policy & Terms</a></span>
+                </label>
+            </div>
+
+            <div class="col-span-1 md:col-span-2 mt-2">
+                <button type="submit" id="registerBtn" class="w-full bg-primary text-white font-extrabold text-xl py-4 rounded-2xl shadow-lg hover:bg-blue-900 transition-transform hover:-translate-y-1">Create Account</button>
+            </div>
+            
+            <p class="text-center mt-4 col-span-1 md:col-span-2 text-gray-600 font-medium">Already have an account? <a href="login.html" class="text-accent hover:underline font-bold">Login here</a></p>
+        </form>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.innerText = message;
+            errorBox.classList.remove('hidden');
+        }
+
+        async function handleRegister() {
+            try {
+                document.getElementById('errorBox').classList.add('hidden'); 
+                
+                const btn = document.getElementById('registerBtn');
+                btn.innerText = "Processing...";
+                btn.disabled = true;
+
+                // 1. Safely grab all values
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim(); // Grab the phone number
+                const school = document.getElementById('school').value.trim();
+                const studentClass = document.getElementById('class').value;
+                const city = document.getElementById('city').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const termsBox = document.getElementById('termsBox').checked;
+
+                // 2. Strict Custom Validations
+                if (!termsBox) throw new Error("You must agree to the Privacy Policy to continue.");
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) throw new Error("Please enter a valid email format.");
+                
+                // Validate Phone: Ensures it is exactly 10 digits
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(phone)) throw new Error("Please enter a valid 10-digit phone number.");
+
+                if (password !== confirmPassword) throw new Error("Passwords do not match!");
+
+                // 3. Connect to Database
+                if (!window.supabase) throw new Error("Database failed to load. Check your connection.");
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                // 4. Create the Account
+                const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+
+                if (authError) {
+                    if (authError.message.toLowerCase().includes("already registered")) {
+                        throw new Error("This email is already in use. Please log in.");
+                    } else {
+                        throw new Error("Supabase Error: " + authError.message);
+                    }
+                }
+
+                // 5. Save the Profile Data (INCLUDING PHONE)
+                if (authData.user) {
+                    const { error: profileError } = await supabase.from('profiles').insert([{ 
+                        id: authData.user.id, 
+                        name: name, 
+                        email: email, // Good practice to store email in profiles too
+                        phone: phone, // Saving the phone number
+                        school: school, 
+                        class: studentClass, 
+                        city: city, 
+                        subscription_status: 'free' 
+                    }]);
+
+                    if (profileError) {
+                        throw new Error("Account made, but profile failed to save: " + profileError.message);
+                    } 
+
+                    // 6. Success! Route them.
+                    if (studentClass === '6') window.location.href = "class6-dashboard.html";
+                    else if (studentClass === '7') window.location.href = "class7-dashboard.html";
+                    else if (studentClass === '8') window.location.href = "class8-dashboard.html";
+                    else window.location.href = "dashboard.html";
+                }
+
+            } catch (err) {
+                showError(err.message);
+                const btn = document.getElementById('registerBtn');
+                btn.innerText = "Create Account";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

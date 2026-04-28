@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Vidhyatantra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1E3A8A', accent: '#F97316', success: '#22C55E', cream: '#FFF7E6' } } } }
+    </script>
+    <style>
+        body { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-cream min-h-screen flex items-center justify-center p-6">
+    <div class="bg-white p-10 rounded-[2.5rem] shadow-xl w-full max-w-md border border-blue-50">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 shadow-lg">V</div>
+            <h2 class="text-3xl font-extrabold text-primary">Welcome Back</h2>
+            <p class="text-gray-500 mt-2">Log in to continue your story.</p>
+        </div>
+
+        <div id="errorBox" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm font-medium text-center"></div>
+
+        <form id="loginForm" class="space-y-5">
+            <div>
+                <label class="block text-primary font-bold mb-2">Email</label>
+                <input type="email" id="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50">
+            </div>
+            
+            <div>
+                <label class="block text-primary font-bold mb-2">Password</label>
+                <div class="relative">
+                    <input type="password" id="password" required class="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:outline-none focus:border-primary bg-gray-50">
+                    <button type="button" onclick="togglePassword()" class="absolute right-4 top-3 text-xl text-gray-400 hover:text-primary transition-colors focus:outline-none">
+                        <span id="eyeIcon">👁️</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center text-sm font-medium text-gray-600 mt-2">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="rememberMe" checked class="w-4 h-4 accent-primary rounded cursor-pointer border-gray-300">
+                    <span>Remember me</span>
+                </label>
+                <a href="forgot-password.html" class="text-accent hover:underline">Forgot password?</a>
+            </div>
+
+            <button type="submit" id="loginBtn" class="w-full bg-primary text-white font-bold text-lg py-4 rounded-2xl shadow-lg hover:bg-blue-900 transition-transform hover:-translate-y-1 mt-6">Login</button>
+        </form>
+
+        <p class="text-center mt-8 text-gray-600 font-medium">Don't have an account? <a href="register.html" class="text-accent hover:underline font-bold">Register here</a></p>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        // VISIBILITY TOGGLE SCRIPT
+        function togglePassword() {
+            const pwdInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+                eyeIcon.innerText = "🙈"; 
+            } else {
+                pwdInput.type = "password";
+                eyeIcon.innerText = "👁️";
+            }
+        }
+
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.innerText = message;
+            errorBox.classList.remove('hidden');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const btn = document.getElementById('loginBtn');
+            const errorBox = document.getElementById('errorBox');
+            
+            errorBox.classList.add('hidden'); 
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError("Please enter a valid email address.");
+                return;
+            }
+
+            btn.innerText = "Logging in...";
+            btn.disabled = true;
+
+            try {
+                if (!window.supabase) throw new Error("Database connection failed.");
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
+
+                if (authError) throw new Error("Invalid email or password.");
+
+                // Handle 'Remember Me' preference
+                if (!rememberMe) {
+                    sessionStorage.setItem('doNotRemember', 'true');
+                } else {
+                    sessionStorage.removeItem('doNotRemember');
+                }
+
+                if (authData.user.email === 'vidyatantra19@gmail.com') {
+                    window.location.href = "admin-dashboard.html";
+                    return; 
+                }
+
+                const userId = authData.user.id;
+                const { data: profile } = await supabase.from('profiles').select('subscription_status, subscription_end_date, class').eq('id', userId).single();
+
+                if (profile && profile.class === '6') window.location.href = "class6-dashboard.html";
+                else if (profile && profile.class === '7') window.location.href = "class7-dashboard.html";
+                else if (profile && profile.class === '8') window.location.href = "class8-dashboard.html";
+                else window.location.href = "dashboard.html";
+
+            } catch (err) {
+                showError("Error: " + err.message);
+                btn.innerText = "Login";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

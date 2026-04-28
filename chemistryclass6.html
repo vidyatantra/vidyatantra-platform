@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Topics - Vidyatantra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#6B21A8', accent: '#F97316', success: '#22C55E', premium: '#8B5CF6' } } } }
+    </script>
+    <style>
+        body { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .secure-hide { display: none; }
+        .premium-bg {
+            background: linear-gradient(-45deg, #7c3aed, #4f46e5, #2563eb, #9333ea);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans m-0 p-0 min-h-screen flex flex-col secure-hide" id="topic-body">
+
+    <header class="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-20">
+        <div class="max-w-[90rem] mx-auto flex justify-between items-center">
+            <button onclick="window.location.href='class6-dashboard.html'" class="text-gray-500 hover:text-primary font-bold flex items-center transition-colors text-lg">
+                ← Back to Dashboard
+            </button>
+            <div class="flex items-center space-x-5 md:space-x-8">
+                <div class="flex flex-col items-center" title="AI Doubts Remaining">
+                    <span class="text-[10px] text-purple-500 font-extrabold uppercase tracking-wider mb-0.5">AI Doubts</span>
+                    <div class="flex items-center text-purple-600 font-black bg-purple-50 border border-purple-200 px-3 py-1 rounded-lg shadow-sm">
+                        <span class="mr-1.5 text-lg leading-none">🤖</span> <span id="ui-ai">0</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center" title="Daily Streak">
+                    <span class="text-[10px] text-orange-400 font-extrabold uppercase tracking-wider mb-0.5">Streak</span>
+                    <div class="flex items-center text-orange-600 font-black bg-orange-50 border border-orange-200 px-3 py-1 rounded-lg shadow-sm">
+                        <span class="mr-1.5 text-lg leading-none">🔥</span> <span id="ui-streak">0</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center" title="Total Points">
+                    <span class="text-[10px] text-yellow-500 font-extrabold uppercase tracking-wider mb-0.5">Points</span>
+                    <div class="flex items-center text-yellow-600 font-black bg-yellow-50 border border-yellow-200 px-3 py-1 rounded-lg shadow-sm">
+                        <span class="mr-1.5 text-lg leading-none">🪙</span> <span id="ui-points">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[90rem] mx-auto w-full px-8 py-14">
+        <div class="text-center mb-16">
+            <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-4xl mx-auto mb-6 shadow-inner border border-purple-200">⚗️</div>
+            <h1 class="text-5xl font-extrabold text-primary mb-4">Chemistry Missions</h1>
+            <p class="text-gray-500 font-medium text-xl">Select a chapter to begin your story.</p>
+        </div>
+
+        <div id="premium-banner" class="max-w-5xl mx-auto mb-12 premium-bg rounded-[2.5rem] p-8 shadow-2xl text-white flex flex-col md:flex-row items-center justify-between relative overflow-hidden hidden">
+            <div class="relative z-10 md:w-2/3 mb-6 md:mb-0">
+                <span class="bg-yellow-400 text-yellow-900 text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-sm mb-3 inline-block">Upgrade</span>
+                <h3 class="text-3xl font-black mb-2">Unlock Your Full Potential! 🚀</h3>
+                <p class="text-indigo-100 font-medium mb-4">You are on the Free Tier (1 Story/Day & 1 Doubt/Month). Go Premium for ultimate access.</p>
+            </div>
+            <div class="relative z-10">
+                <button onclick="window.location.href='subscription.html'" class="bg-white text-indigo-700 font-black px-8 py-4 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300">Subscribe Now</button>
+            </div>
+        </div>
+
+        <div id="topics-container" class="max-w-5xl mx-auto space-y-6"></div>
+    </main>
+
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <span class="text-primary font-bold text-xl animate-pulse">Unlocking mission...</span>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        let userProfile = null;
+        let unlockedStories = [];
+
+        const topics = [
+            { id: 'story-chem-1', chapter: 'Chapter 3', title: 'Fibre to Fabric', icon: '🧶', url: 'story-chem-1.html' },
+            { id: 'story-chem-2', chapter: 'Chapter 4', title: 'Sorting Materials into Groups', icon: '🔍', url: 'story-chem-2.html' },
+            { id: 'story-chem-3', chapter: 'Chapter 5', title: 'Separation of Substances', icon: '🌪️', url: 'story-chem-3.html' },
+            { id: 'story-chem-4', chapter: 'Chapter 6', title: 'Changes Around Us', icon: '🔥', url: 'story-chem-4.html' },
+            { id: 'story-chem-5', chapter: 'Chapter 14', title: 'Water', icon: '💧', url: 'story-chem-5.html' },
+            { id: 'story-chem-6', chapter: 'Chapter 16', title: 'Garbage In, Garbage Out', icon: '♻️', url: 'story-chem-6.html' }
+        ];
+
+        function renderTopics() {
+            const container = document.getElementById('topics-container');
+            let html = '';
+
+            topics.forEach(topic => {
+                const isUnlocked = unlockedStories.includes(topic.id);
+                let badgeHtml = ''; let cardClass = ''; let btnText = ''; let btnClass = '';
+
+                if (isUnlocked) {
+                    cardClass = 'bg-white rounded-3xl shadow-md border-2 border-purple-200 hover:shadow-xl relative overflow-hidden';
+                    badgeHtml = `<span class="bg-green-100 text-green-700 text-xs font-extrabold px-4 py-2 rounded-full flex items-center shadow-sm border border-green-200"><span class="mr-1.5 text-sm">✅</span> Unlocked</span>`;
+                    btnText = 'Replay Mission →';
+                    btnClass = 'bg-purple-600 text-white hover:bg-purple-800 shadow-md';
+                } else {
+                    cardClass = 'bg-gray-50 rounded-3xl shadow-sm border border-gray-200 hover:shadow-md hover:bg-white opacity-90';
+                    badgeHtml = `<span class="bg-gray-200 text-gray-600 text-xs font-extrabold px-4 py-2 rounded-full flex items-center border border-gray-300"><span class="mr-1.5 text-sm">🔒</span> Locked</span>`;
+                    btnText = 'Unlock Mission →';
+                    btnClass = 'bg-gray-200 text-gray-600 hover:bg-purple-600 hover:text-white';
+                }
+
+                html += `
+                <div class="${cardClass} p-6 flex flex-col md:flex-row items-center justify-between transition-all group">
+                    <div class="absolute top-6 right-6 md:static md:ml-4 flex-shrink-0 mb-4 md:mb-0 md:order-last">${badgeHtml}</div>
+                    <div class="flex items-center mb-4 md:mb-0 w-full pl-2">
+                        <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl mr-6 border border-purple-100">${topic.icon}</div>
+                        <div class="flex-grow">
+                            <span class="text-xs font-black text-purple-500 uppercase tracking-widest mb-1 block">${topic.chapter}</span>
+                            <h3 class="text-2xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors pr-8 md:pr-0">${topic.title}</h3>
+                        </div>
+                    </div>
+                    <button onclick="checkStoryAccess('${topic.id}', '${topic.url}')" class="w-full md:w-48 ${btnClass} font-bold px-6 py-4 rounded-xl transition-colors flex-shrink-0 ml-0 md:ml-6 mt-4 md:mt-0">${btnText}</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        async function authenticateUser() {
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (sessionError || !session) return window.location.replace("login.html");
+
+                const userId = session.user.id;
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
+                if (!profile) return window.location.replace("login.html");
+
+                userProfile = profile;
+                unlockedStories = profile.unlocked_stories || [];
+
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0]; 
+                const lastActiveStr = profile.last_active || null;
+
+                let updates = {};
+                let needsUpdate = false;
+                let currentPoints = profile.points || 0;
+                let currentStreak = profile.streak || 0;
+
+                if (!lastActiveStr) {
+                    currentStreak = 150;
+                    updates.daily_story_count = 0;
+                    if (profile.subscription_status !== 'premium') {
+                        updates.daily_ai_count = 0; profile.daily_ai_count = 0;
+                    }
+                    needsUpdate = true;
+                } else if (lastActiveStr !== todayStr) {
+                    const lastDate = new Date(lastActiveStr);
+                    const currDate = new Date(todayStr);
+                    const diffDays = Math.ceil(Math.abs(currDate - lastDate) / (1000 * 60 * 60 * 24));
+
+                    if (diffDays > 1) {
+                        currentPoints = Math.max(0, currentPoints - 100);
+                        currentStreak = 150; 
+                    } else if (diffDays === 1) {
+                        currentStreak += 150;
+                    }
+                    
+                    updates.daily_story_count = 0;
+                    if (profile.subscription_status !== 'premium') {
+                        updates.daily_ai_count = 0; profile.daily_ai_count = 0;
+                    }
+                    needsUpdate = true;
+                }
+
+                if (profile.subscription_status === 'premium') {
+                    const subDateStr = profile.subscription_start_date || profile.created_at; 
+                    if (subDateStr) {
+                        const subDate = new Date(subDateStr);
+                        let cycleStart = new Date(today.getFullYear(), today.getMonth(), subDate.getDate());
+                        if (today < cycleStart) cycleStart.setMonth(cycleStart.getMonth() - 1);
+                        const cycleStartStr = cycleStart.toISOString().split('T')[0];
+
+                        if (!lastActiveStr || lastActiveStr < cycleStartStr) {
+                            updates.daily_ai_count = 0;
+                            profile.daily_ai_count = 0;
+                            needsUpdate = true;
+                        }
+                    }
+                }
+
+                if (lastActiveStr !== todayStr || currentPoints !== profile.points || currentStreak !== profile.streak) {
+                    updates.last_active = todayStr;
+                    updates.points = currentPoints;
+                    updates.streak = currentStreak;
+                    needsUpdate = true;
+                }
+
+                if (needsUpdate) await supabase.from('profiles').update(updates).eq('id', userId);
+
+                if (profile.subscription_status !== 'premium') document.getElementById('premium-banner').classList.remove('hidden');
+
+                let aiUsed = profile.daily_ai_count || 0;
+                let maxDoubts = profile.subscription_status === 'premium' ? 1000 : 1;
+                
+                document.getElementById('ui-points').innerText = currentPoints;
+                document.getElementById('ui-streak').innerText = currentStreak;
+                document.getElementById('ui-ai').innerText = Math.max(0, maxDoubts - aiUsed);
+
+                renderTopics(); 
+                document.getElementById('topic-body').classList.remove('secure-hide');
+
+            } catch (err) {
+                console.error(err);
+                window.location.replace("login.html");
+            }
+        }
+
+        authenticateUser();
+
+        async function checkStoryAccess(storyId, storyUrl) {
+            // ⭐ MASTER CONTROLLER: Give the old story files a VIP Pass!
+            if (unlockedStories.includes(storyId)) {
+                localStorage.setItem(storyId + '_status', 'started'); 
+                window.location.href = storyUrl;
+                return;
+            }
+
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: liveProfile } = await supabase.from('profiles').select('daily_story_count, subscription_status, unlocked_stories').eq('id', userProfile.id).single();
+
+                let currentUnlocked = liveProfile.unlocked_stories || [];
+                if (currentUnlocked.includes(storyId)) {
+                    localStorage.setItem(storyId + '_status', 'started'); 
+                    window.location.href = storyUrl;
+                    return;
+                }
+
+                let currentCount = liveProfile.daily_story_count || 0;
+
+                if (liveProfile.subscription_status !== 'premium' && currentCount >= 1) {
+                    window.location.href = 'subscription.html';
+                    return;
+                }
+
+                currentUnlocked.push(storyId);
+
+                await supabase.from('profiles').update({ 
+                    daily_story_count: currentCount + 1,
+                    unlocked_stories: currentUnlocked
+                }).eq('id', userProfile.id);
+                
+                localStorage.setItem(storyId + '_status', 'started'); 
+                window.location.href = storyUrl;
+
+            } catch(e) {
+                alert("Error connecting. Try again.");
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

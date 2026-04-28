@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics - Light, Shadows and Reflections</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1E3A8A', accent: '#F97316', success: '#22C55E', cream: '#FFF7E6' } } } }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.8s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .secure-hide { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col secure-hide" id="story-body">
+
+    <header class="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center w-full">
+            <button onclick="window.location.href='physicsclass6.html'" class="text-gray-500 hover:text-primary font-bold flex items-center transition-colors">
+                ← Back to Topics
+            </button>
+            <div class="flex items-center space-x-2">
+                <span class="bg-blue-100 text-blue-800 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full">Physics</span>
+                <span class="text-gray-400 font-bold text-sm">Mission 2</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto w-full px-6 py-10 fade-in">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-primary mb-4">Light, Shadows and Reflections</h1>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 max-w-md mx-auto overflow-hidden">
+                <div id="progressBar" class="bg-success h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="flex justify-center space-x-4 md:space-x-8 mb-8">
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-orange-400 font-extrabold uppercase tracking-wider mb-1">Streak</span>
+                <div class="flex items-center text-orange-600 font-black bg-orange-50 border-2 border-orange-200 px-6 py-3 rounded-2xl shadow-md">
+                    <span class="mr-3 text-3xl md:text-4xl leading-none">🔥</span> <span id="live-streak">...</span>
+                </div>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-xs text-yellow-500 font-extrabold uppercase tracking-wider mb-1">Points</span>
+                <div class="flex items-center text-yellow-600 font-black bg-yellow-50 border-2 border-yellow-200 px-6 py-3 rounded-2xl shadow-md">
+                    <span class="mr-3 text-3xl md:text-4xl leading-none">🪙</span> <span id="live-points">...</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="part1" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                It was a sunny afternoon. Rohan was playing in the garden when he suddenly screamed. "Neha! There's a dark figure following me!" Neha ran out and laughed. "That's not a figure, Rohan. That's your own shadow!" Rohan looked down and moved around. The shadow moved with him. "Why does it follow me? And why does it disappear when I go inside?" Neha realized her little brother didn't understand light and shadows. "Let me explain. Everything we see—including shadows—is because of light."
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Rohan is confused about why shadows form. What is light, and why do we need light to see things?</p>
+                <textarea id="q1-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn1" onclick="gradeAnswer(1, ['light', 'energy', 'straight', 'reflect', 'visible', 'eyes'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp1" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm mb-2"><strong>What is light?</strong> Light is a form of energy that makes things visible to us. It travels in straight lines.</p>
+                    <p class="text-gray-700 text-sm"><strong>Why we need light:</strong> We see an object only when light falls on it and reflects into our eyes. Without light, things are invisible.</p>
+                    <button onclick="unlockNext(1)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success1" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part2" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Neha took Rohan outside into the sunlight. "See, the sun is a natural source of light. It emits light in straight lines. When your body blocks these straight rays, a dark area is formed behind you. That dark area is called a shadow." Rohan looked at his shadow. "So a shadow is just where light couldn't reach because I was in the way?" Neha nodded. "Exactly! Now let's see how the size and shape of shadows change."
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">What are the three essential conditions for a shadow to form? How does the position of the light source affect the shadow?</p>
+                <textarea id="q2-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn2" onclick="gradeAnswer(2, ['source', 'opaque', 'screen', 'block', 'position', 'size', 'shape'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp2" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm mb-2"><strong>Three conditions:</strong> 1. Source of light, 2. An opaque object (to block it), 3. A screen (ground/wall) to catch it.</p>
+                    <p class="text-gray-700 text-sm">The position of the light source changes the shadow's size and shape (e.g., closer light makes a bigger shadow).</p>
+                    <button onclick="unlockNext(2)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success2" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part3" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Neha took a torch and a ball inside the room. She turned off the lights and closed the curtains. "Now watch," she said. She shone the torch on the ball from different directions. When the torch was close, the shadow was big. When the torch was far, the shadow was small. When she moved the torch to the side, the shadow stretched out. "Aha!" Rohan said. "So my shadow is long in the morning and evening because the sun is low, and short at noon because the sun is high above!"
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">Why does the length of a shadow change from morning to noon to evening?</p>
+                <textarea id="q3-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn3" onclick="gradeAnswer(3, ['position', 'sun', 'angle', 'morning', 'evening', 'overhead', 'long', 'short'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp3" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">The sun's position changes during the day. In the morning/evening, the sun is at a low angle, creating long shadows. At noon, the sun is directly overhead, creating very short shadows.</p>
+                    <button onclick="unlockNext(3)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success3" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part4" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Rohan was now curious. "What about things that aren't solid? Like glass or water?" Neha took a glass of water and a glass window. "Let's see," she said. She shone the torch on a wooden block—a dark shadow appeared. Then she shone it on a glass window—no shadow! "Glass is transparent. Light passes right through it, so no shadow forms." She shone it on a plastic bottle—a faint shadow appeared. "This is translucent. It lets some light through, so the shadow is faint."
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">How do transparent, translucent, and opaque materials affect light and shadow formation?</p>
+                <textarea id="q4-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn4" onclick="gradeAnswer(4, ['transparent', 'translucent', 'opaque', 'pass', 'block', 'faint', 'dark'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp4" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <ul class="list-disc list-inside text-gray-700 text-sm">
+                        <li><strong>Transparent:</strong> Allows light to pass completely (No shadow).</li>
+                        <li><strong>Translucent:</strong> Allows some light to pass (Faint shadow).</li>
+                        <li><strong>Opaque:</strong> Blocks all light (Dark, clear shadow).</li>
+                    </ul>
+                    <button onclick="unlockNext(4)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button>
+                </div>
+                <div id="success4" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part5" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                The next morning, Rohan noticed a shiny steel plate reflecting the sunlight onto the wall. "Neha! Look! Light is bouncing off the plate!" Neha smiled. "That's reflection. When light hits a smooth, shiny surface, it bounces back. That's how we see ourselves in a mirror." Rohan ran to the bathroom mirror. "So the mirror reflects light into my eyes?" Neha nodded. "Exactly. And that's why you can see your own face. Reflection is also how we see everything around us that doesn't produce its own light."
+            </p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-orange-200 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3>
+                    <button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI Doubt</button>
+                </div>
+                <p class="text-gray-700 font-bold text-lg mb-4">What is reflection? What types of surfaces produce clear reflections?</p>
+                <textarea id="q5-input" rows="4" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:outline-none focus:border-primary bg-white mb-4 resize-none"></textarea>
+                <button id="btn5" onclick="gradeAnswer(5, ['reflection', 'bounce', 'smooth', 'shiny', 'mirror', 'clear'])" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-blue-900 transition-colors">Submit Answer</button>
+
+                <div id="exp5" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl">
+                    <h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4>
+                    <p class="text-gray-700 text-sm">Reflection is the bouncing back of light from a surface. Smooth, shiny surfaces (like mirrors or polished metal) produce clear reflections, while rough surfaces produce diffused (scattered) reflection.</p>
+                    <button onclick="unlockNext(5)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Finish Mission</button>
+                </div>
+                <div id="success5" class="hidden mt-4 p-4 bg-green-50 border-2 border-green-200 rounded-2xl text-center"><p class="font-bold text-success text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="partFinal" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 hidden fade-in text-center">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-4xl font-extrabold text-success mb-4">Mission Complete!</h2>
+            <p class="text-xl text-gray-600 mb-8 font-medium">Incredible work. You have mastered Light, Shadows and Reflections!</p>
+            <button onclick="window.location.href='physicsclass6.html'" class="bg-primary text-white font-extrabold text-2xl px-12 py-6 rounded-2xl hover:bg-blue-900 transition-transform shadow-xl hover:-translate-y-1">Return to Topic Menu</button>
+        </div>
+
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        
+        let userProfile = null;
+        let userData = { points: 0, streak: 0, questions_attempted: 0, questions_correct: 0, questions_wrong: 0 };
+        const TOTAL_QUESTIONS = 5; 
+        const CURRENT_STORY_ID = 'story-physics-2'; // USED FOR THE BOUNCER
+
+        async function loadUser() {
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return window.location.replace("login.html");
+
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                if (profile) {
+                    userProfile = profile;
+
+                    // ==========================================
+                    // 🛡️ THE BOUNCER (Direct URL Protection)
+                    // ==========================================
+                    const status = localStorage.getItem(CURRENT_STORY_ID + '_status');
+                    if (status !== 'started' && status !== 'completed') {
+                        if (profile.subscription_status === 'free' && (profile.daily_story_count || 0) >= 1) {
+                            alert("Bouncer: You have reached your free daily limit! Redirecting to dashboard.");
+                            window.location.replace("physicsclass6.html");
+                            return;
+                        } else {
+                            await supabase.from('profiles').update({ daily_story_count: (profile.daily_story_count || 0) + 1 }).eq('id', session.user.id);
+                            localStorage.setItem(CURRENT_STORY_ID + '_status', 'started');
+                        }
+                    }
+                    // ==========================================
+
+                    userData = { points: profile.points || 0, streak: profile.streak || 0, questions_attempted: profile.questions_attempted || 0, questions_correct: profile.questions_correct || 0, questions_wrong: profile.questions_wrong || 0 };
+                    document.getElementById('live-points').innerText = userData.points;
+                    document.getElementById('live-streak').innerText = userData.streak;
+                }
+                document.getElementById('story-body').classList.remove('secure-hide');
+            } catch (err) { console.error(err); }
+        }
+
+        loadUser();
+
+        async function checkAiDoubt() {
+            let aiUsed = userProfile.daily_ai_count || 0;
+            let maxDoubts = userProfile.subscription_status === 'premium' ? 1000 : 1;
+            
+            if (aiUsed >= maxDoubts) {
+                if (maxDoubts === 1) alert("You used your 1 free AI Doubt today! Subscribe to unlock 1000 daily doubts.");
+                else alert("You have reached your daily limit of 1000 AI Doubts!");
+                return;
+            }
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                // Database update moved to backend
+                window.location.href = "ai-chat.html"; 
+            } catch(e) { alert("Error connecting."); }
+        }
+
+        async function gradeAnswer(qNum, keywords) {
+            const inputField = document.getElementById(`q${qNum}-input`);
+            const btn = document.getElementById(`btn${qNum}`);
+            if (btn.disabled) return; 
+            
+            const answerText = inputField.value.toLowerCase().replace(/[^\w\s]/g, ''); 
+            if (answerText.trim() === "") { alert("Please type an answer first!"); return; }
+
+            btn.disabled = true; btn.innerText = "Grading..."; inputField.disabled = true;
+
+            let matchCount = 0;
+            keywords.forEach(kw => { if (answerText.includes(kw.toLowerCase())) matchCount++; });
+
+            const isCorrect = matchCount >= 1; 
+
+            userData.questions_attempted += 1;
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            if (isCorrect) {
+                userData.points += 100; userData.questions_correct += 1;
+                document.getElementById(`success${qNum}`).classList.remove('hidden');
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+                setTimeout(() => { unlockNext(qNum); }, 1500); 
+            } else {
+                userData.points = Math.max(0, userData.points - 10); userData.questions_wrong += 1;
+                document.getElementById(`exp${qNum}`).classList.remove('hidden');
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+            }
+        }
+
+        async function saveToDatabase(supabase) {
+            await supabase.from('profiles').update({ points: userData.points, questions_attempted: userData.questions_attempted, questions_correct: userData.questions_correct, questions_wrong: userData.questions_wrong }).eq('id', userProfile.id);
+        }
+
+        function unlockNext(currentQNum) {
+            document.getElementById(`btn${currentQNum}`).classList.add('hidden'); 
+            let nextPartNum = currentQNum + 1;
+            document.getElementById('progressBar').style.width = `${(currentQNum / TOTAL_QUESTIONS) * 100}%`;
+            
+            if (nextPartNum <= TOTAL_QUESTIONS) { 
+                document.getElementById(`part${nextPartNum}`).classList.remove('hidden'); 
+            } else { 
+                document.getElementById('partFinal').classList.remove('hidden'); 
+                localStorage.setItem(CURRENT_STORY_ID + '_status', 'completed'); 
+            }
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

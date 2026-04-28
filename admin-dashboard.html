@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Vidyatantra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#1E3A8A', accent: '#F97316', success: '#22C55E', cream: '#FFF7E6' } } } }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans m-0 p-0 hidden" id="adminBody">
+    <header class="bg-primary px-6 py-4 shadow-md text-white flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-accent rounded-xl flex items-center justify-center font-bold text-xl shadow-md">V</div>
+            <span class="text-2xl font-extrabold tracking-tight">Admin Control Panel</span>
+        </div>
+        <button onclick="handleLogout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-bold transition-colors">Logout</button>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <h1 class="text-3xl font-extrabold text-primary mb-6">Student Database</h1>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <p class="text-gray-600">Secure Vault Access Granted. Student list will load here.</p>
+        </div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function verifyAdminAccess() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error || !session || session.user.email !== 'vidyatantra19@gmail.com') {
+                window.location.replace("login.html"); return; 
+            }
+            document.getElementById('adminBody').classList.remove('hidden');
+        }
+
+        verifyAdminAccess();
+
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>
