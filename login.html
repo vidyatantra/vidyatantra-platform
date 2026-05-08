@@ -119,9 +119,9 @@
                 const userId = authData.user.id;
                 const { data: profile } = await supabase.from('profiles').select('subscription_status, subscription_end_date, class').eq('id', userId).single();
 
-                if (profile && profile.class === '6') window.location.href = "class6-dashboard.html";
-                else if (profile && profile.class === '7') window.location.href = "class7-dashboard.html";
-                else if (profile && profile.class === '8') window.location.href = "class8-dashboard.html";
+                if (profile && profile.class === 6) window.location.href = "class6-dashboard.html";
+                else if (profile && profile.class === 7) window.location.href = "class7-dashboard.html";
+                else if (profile && profile.class === 8) window.location.href = "class8-dashboard.html";
                 else window.location.href = "dashboard.html";
 
             } catch (err) {
