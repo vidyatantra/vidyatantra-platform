@@ -118,12 +118,23 @@
         }
         loadUser();
 
-        async function checkAiDoubt() {
-            let aiUsed = userProfile.daily_ai_count || 0; let maxDoubts = userProfile.subscription_status === 'premium' ? 1000 : 1;
-            if (aiUsed >= maxDoubts) { alert("You have reached your limit of AI Doubts!"); return; }
-            try { const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // Database 
-                 update moved to backend window.location.href = "ai-chat.html"; } catch(e) { alert("Error connecting."); }
-        }
+       async function checkAiDoubt() {
+    let aiUsed = userProfile.daily_ai_count || 0; 
+    let maxDoubts = userProfile.subscription_status === 'premium' ? 1000 : 1;
+    
+    if (aiUsed >= maxDoubts) { 
+        alert("You have reached your limit of AI Doubts!"); 
+        return; 
+    }
+    
+    try { 
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
+        // Database update moved to backend 
+        window.location.href = "ai-chat.html"; // <-- Moved to its own active line!
+    } catch(e) { 
+        alert("Error connecting."); 
+    }
+}
 
         async function gradeAnswer(qNum, requiredPairs) {
             const inputField = document.getElementById(`q${qNum}-input`); const btn = document.getElementById(`btn${qNum}`);
