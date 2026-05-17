@@ -208,7 +208,7 @@
                     document.getElementById('live-points').innerText = userData.points;
                     document.getElementById('live-streak').innerText = userData.streak;
                 }
-                document.getElementById('story-body').classList.remove('secure-hide');
+                document.getElementById('story-body').classList.remove('secure-hide'); let savedProg = parseInt(localStorage.getItem(CURRENT_STORY_ID + '_progress')) || 1; for(let i=1; i<savedProg; i++){ document.getElementById('btn'+i)?.classList.add('hidden'); document.getElementById('success'+i)?.classList.remove('hidden'); let nxt = (i+1 <= TOTAL_QUESTIONS) ? 'part'+(i+1) : 'partFinal'; document.getElementById(nxt)?.classList.remove('hidden'); document.getElementById('progressBar').style.width = ((i/TOTAL_QUESTIONS)*100)+'%'; } if(savedProg > 1) setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 500);
             } catch (err) { console.error(err); }
         }
 
