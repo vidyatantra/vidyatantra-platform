@@ -154,7 +154,8 @@
                             document.getElementById('pricing-ui').classList.add('hidden');
                             document.getElementById('success-ui').classList.remove('hidden');
                         } else {
-                            alert("Payment verification failed. Please contact support.");
+                            alert("Database Error: " + (verifyData.error || "Unknown"));
+                              console.error("Full Error:", verifyData);
                             btn.innerHTML = `Try Again`;
                             btn.disabled = false;
                         }
