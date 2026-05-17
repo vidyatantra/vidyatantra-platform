@@ -256,11 +256,11 @@
                     }
                     if (pairMatched) { isCorrect = true; break; }
                 }
-            }
+           }
 
+            localStorage.setItem(CURRENT_STORY_ID + '_q' + qNum, isCorrect ? 'correct' : 'wrong');
             userData.questions_attempted += 1;
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
             if (isCorrect) {
                 userData.points += 100; userData.questions_correct += 1;
                 document.getElementById(`success${qNum}`).classList.remove('hidden');

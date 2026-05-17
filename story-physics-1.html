@@ -270,7 +270,7 @@
             });
 
             // Require at least 2 keywords to pass
-            const isCorrect = matchCount >= 2; 
+            const isCorrect = matchCount >= 2; localStorage.setItem(CURRENT_STORY_ID + '_q' + qNum, isCorrect ? 'correct' : 'wrong');
 
             userData.questions_attempted += 1;
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

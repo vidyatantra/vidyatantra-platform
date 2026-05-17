@@ -252,7 +252,7 @@
             let matchCount = 0;
             keywords.forEach(kw => { if (answerText.includes(kw.toLowerCase())) matchCount++; });
 
-            const isCorrect = matchCount >= 1; 
+            const isCorrect = matchCount >= 1; localStorage.setItem(CURRENT_STORY_ID + '_q' + qNum, isCorrect ? 'correct' : 'wrong'); 
 
             userData.questions_attempted += 1;
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
