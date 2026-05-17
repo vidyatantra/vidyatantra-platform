@@ -172,7 +172,7 @@
             document.getElementById(`btn${currentQNum}`)?.classList.add('hidden'); 
             let nextPartNum = currentQNum + 1; document.getElementById('progressBar').style.width = `${(currentQNum / TOTAL_QUESTIONS) * 100}%`;
             if (nextPartNum <= TOTAL_QUESTIONS) { document.getElementById(`part${nextPartNum}`).classList.remove('hidden'); } else { document.getElementById('partFinal').classList.remove('hidden'); localStorage.setItem(CURRENT_STORY_ID + '_status', 'completed'); }
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            localStorage.setItem(CURRENT_STORY_ID + '_progress', nextPartNum); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
 </body>

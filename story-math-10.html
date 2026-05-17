@@ -272,7 +272,7 @@
                 document.getElementById('partFinal').classList.remove('hidden'); 
                 localStorage.setItem(CURRENT_STORY_ID + '_status', 'completed'); 
             }
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            localStorage.setItem(CURRENT_STORY_ID + '_progress', nextPartNum); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
 </body>
