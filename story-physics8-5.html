@@ -129,12 +129,12 @@ async function checkAiDoubt() {
     try { 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
         // Database update moved to backend 
-        window.location.href = "ai-chat.html"; // <-- Moved to its own active line!
+        localStorage.setItem('returnUrl', window.location.href); window.location.href = "ai-chat.html"; // <-- Moved to its own active line!
     } catch(e) { 
         alert("Error connecting."); 
     }
 }
-        }
+        
 
         async function gradeAnswer(qNum, requiredPairs) {
             const inputField = document.getElementById(`q${qNum}-input`); const btn = document.getElementById(`btn${qNum}`);

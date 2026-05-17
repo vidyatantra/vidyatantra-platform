@@ -241,7 +241,7 @@
             try {
                 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 await supabase.from('profiles').update({ daily_ai_count: (userProfile.daily_ai_count || 0) + 1 }).eq('id', userProfile.id);
-                window.location.href = "ai-chat.html"; 
+                localStorage.setItem('returnUrl', window.location.href); window.location.href = "ai-chat.html"; 
             } catch(e) {
                 alert("Error connecting.");
             }

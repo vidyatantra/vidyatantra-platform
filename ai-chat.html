@@ -29,7 +29,7 @@
 <body class="h-screen flex flex-col overflow-hidden">
 
     <header class="glass-panel px-6 py-4 flex justify-between items-center z-20 sticky top-0">
-        <button onclick="goBack()" class="text-gray-400 hover:text-white flex items-center transition-colors font-bold">
+        <button onclick="goBackToStory()" class="text-gray-400 hover:text-white flex items-center transition-colors font-bold">
             ← Back
         </button>
         <div class="flex items-center space-x-3">
@@ -225,5 +225,12 @@
             }
         });
     </script>
+    <script>
+    function goBackToStory() {
+        const returnUrl = localStorage.getItem('returnUrl');
+        if (returnUrl) { window.location.href = returnUrl; } 
+        else { window.location.href = "class8-dashboard.html"; }
+    }
+</script>
 </body>
 </html>
