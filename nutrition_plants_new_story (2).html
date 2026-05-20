@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biology - Nutrition in Plants (Adventure Edition)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#047857', accent: '#F59E0B', success: '#10B981', cream: '#F0FDF4' } } } }</script>
+    <style>.fade-in { animation: fadeIn 0.8s ease-in-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } .secure-hide { display: none; }</style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col secure-hide" id="story-body">
+    <header class="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center w-full">
+            <button onclick="window.location.href='biologyclass7.html'" class="text-gray-500 hover:text-primary font-bold flex items-center transition-colors">← Back to Topics</button>
+            <div class="flex items-center space-x-2"><span class="bg-green-100 text-green-800 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full">Biology</span><span class="text-gray-400 font-bold text-sm">Adventure Quest</span></div>
+        </div>
+    </header>
+    <main class="flex-grow max-w-4xl mx-auto w-full px-6 py-10 fade-in">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-primary mb-4">🌱 The Farmer's Green Crisis 🌱</h1>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 max-w-md mx-auto overflow-hidden"><div id="progressBar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div></div>
+        </div>
+        <div class="flex justify-center space-x-4 md:space-x-8 mb-8">
+            <div class="flex flex-col items-center"><span class="text-xs text-amber-500 font-extrabold uppercase tracking-wider mb-1">Streak</span><div class="flex items-center text-amber-600 font-black bg-amber-50 border-2 border-amber-200 px-6 py-3 rounded-2xl shadow-md"><span class="mr-3 text-3xl md:text-4xl leading-none">🔥</span> <span id="live-streak">...</span></div></div>
+            <div class="flex flex-col items-center"><span class="text-xs text-emerald-600 font-extrabold uppercase tracking-wider mb-1">Points</span><div class="flex items-center text-emerald-700 font-black bg-emerald-50 border-2 border-emerald-200 px-6 py-3 rounded-2xl shadow-md"><span class="mr-3 text-3xl md:text-4xl leading-none">🪙</span> <span id="live-points">...</span></div></div>
+        </div>
+
+        <div id="part1" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8"><strong>🎬 Scene 1: The Drought Disaster</strong><br><br>Arjun, a teenage farmer, discovered his rice field browning mysteriously despite daily water supply. His plants weren't absorbing nutrients properly. Panicking, he rushed to the agricultural expert in town. "Something's choking my crops!" he cried. The expert smiled knowingly. "Not choking, my boy. Your plants need more than just water and soil minerals. They're missing a critical ingredient—and it's free from the sky!"</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-emerald-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4"><strong>What is the free ingredient from the sky that plants use to make their own food?</strong></p>
+                <div class="space-y-3 mb-4">
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q1" value="A" class="mr-3"> <span class="font-semibold">A) Nitrogen from soil</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q1" value="B" class="mr-3"> <span class="font-semibold">B) Sunlight from the sun</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q1" value="C" class="mr-3"> <span class="font-semibold">C) Oxygen from air</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q1" value="D" class="mr-3"> <span class="font-semibold">D) Minerals from rocks</span>
+                    </label>
+                </div>
+                <button id="btn1" onclick="gradeAnswerMCQ(1, 'B')" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-emerald-900 transition-colors">Submit Answer</button>
+                <div id="exp1" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm"><strong>Correct Answer: B) Sunlight from the sun</strong><br><br><strong>Why B is Correct:</strong> Plants need sunlight as an energy source to perform photosynthesis. This requires THREE inputs: water, carbon dioxide, AND sunlight. Sunlight is the free, renewable energy that powers the entire process. Without sunlight, even with water and CO2, no food production occurs—this was Arjun's crops' missing ingredient.<br><br><strong>Why Others Are Wrong:</strong><br>A) Nitrogen from soil - It's a nutrient, not an energy source; not directly used in photosynthesis.<br>C) Oxygen from air - It's a PRODUCT of photosynthesis, not a raw material needed for it.<br>D) Minerals from rocks - They support growth but aren't primary ingredients for food production.</p><button onclick="unlockNext(1)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success1" class="hidden mt-4 p-4 bg-emerald-100 border-2 border-emerald-300 rounded-2xl text-center"><p class="font-bold text-emerald-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part2" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8"><strong>🎬 Scene 2: The Monsoon Mystery</strong><br><br>Arjun planted his field in the monsoon season, ensuring 8 hours of sunlight daily. But a shocking discovery awaited! Near his field, a carnivorous plant grew around trapped insects. "Why would a plant eat insects when it gets sunlight?" he wondered. The expert revealed: "Not all green plants rely purely on photosynthesis. Some compensate for nutrient deficiencies through alternative feeding strategies. Your field has nutrient-poor soil—these plants evolved smartly!"</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-emerald-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4"><strong>Which nutrient deficiency causes carnivorous plants like pitcher plants to trap insects?</strong></p>
+                <div class="space-y-3 mb-4">
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q2" value="A" class="mr-3"> <span class="font-semibold">A) Phosphorus deficiency</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q2" value="B" class="mr-3"> <span class="font-semibold">B) Nitrogen and mineral deficiency</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q2" value="C" class="mr-3"> <span class="font-semibold">C) Potassium deficiency only</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q2" value="D" class="mr-3"> <span class="font-semibold">D) Sulfur deficiency</span>
+                    </label>
+                </div>
+                <button id="btn2" onclick="gradeAnswerMCQ(2, 'B')" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-emerald-900 transition-colors">Submit Answer</button>
+                <div id="exp2" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm"><strong>Correct Answer: B) Nitrogen and mineral deficiency</strong><br><br><strong>Why B is Correct:</strong> Carnivorous plants evolved in nitrogen-poor environments (swamps, rocky areas). Insects contain protein (rich in nitrogen and other minerals). By trapping and digesting insects, they obtain these deficient nutrients. The plant still photosynthesizes BUT supplements nutrition heterotrophically—called insectivorous nutrition.<br><br><strong>Why Others Are Wrong:</strong><br>A) Phosphorus deficiency - While important, insects don't specifically address P deficiency; nitrogen is primary.<br>C) Potassium deficiency only - K is essential but not the main driver of carnivory; insects provide multiple nutrients, especially N.<br>D) Sulfur deficiency - Needed in small amounts; not the primary trigger for insect-trapping evolution.</p><button onclick="unlockNext(2)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success2" class="hidden mt-4 p-4 bg-emerald-100 border-2 border-emerald-300 rounded-2xl text-center"><p class="font-bold text-emerald-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part3" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8"><strong>🎬 Scene 3: The Parasite's Secret</strong><br><br>Walking through the village market, Arjun noticed a farmer selling strange vine-infested crops. "That's Cuscuta—a plant killer!" warned a merchant. Intrigued, Arjun learned this yellow, thread-like plant completely depends on hosts for survival. It has no chlorophyll, no leaves, no independent feeding mechanism. "But why can't it just make its own food like normal plants?" Arjun asked. The merchant grinned mysteriously, "Some plants took evolution's easier path—complete dependence."</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-emerald-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4"><strong>What type of nutrition does Cuscuta (Amarbel) depend on, and what does it feed from?</strong></p>
+                <div class="space-y-3 mb-4">
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q3" value="A" class="mr-3"> <span class="font-semibold">A) Autotrophic nutrition from soil minerals</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q3" value="B" class="mr-3"> <span class="font-semibold">B) Parasitic nutrition from host plant's ready-made food</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q3" value="C" class="mr-3"> <span class="font-semibold">C) Saprophytic nutrition from dead matter</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q3" value="D" class="mr-3"> <span class="font-semibold">D) Holozoic nutrition by ingesting organisms</span>
+                    </label>
+                </div>
+                <button id="btn3" onclick="gradeAnswerMCQ(3, 'B')" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-emerald-900 transition-colors">Submit Answer</button>
+                <div id="exp3" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm"><strong>Correct Answer: B) Parasitic nutrition from host plant's ready-made food</strong><br><br><strong>Why B is Correct:</strong> Cuscuta is a complete obligate parasite with ZERO chlorophyll, NO leaves, and entirely depends on hosts. It penetrates host plants with specialized structures called haustoria, absorbing ready-made glucose and organic compounds. This is parasitic heterotrophic nutrition.<br><br><strong>Why Others Are Wrong:</strong><br>A) Autotrophic nutrition - Completely false; Cuscuta has zero chlorophyll, cannot photosynthesize, is yellow/orange not green.<br>C) Saprophytic nutrition - Saprophytes absorb from decaying matter; Cuscuta feeds from LIVING hosts (parasitic, not saprophytic).<br>D) Holozoic nutrition - Unique to animals that ingest organisms; Cuscuta is a plant that absorbs dissolved nutrients from plant sap.</p><button onclick="unlockNext(3)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success3" class="hidden mt-4 p-4 bg-emerald-100 border-2 border-emerald-300 rounded-2xl text-center"><p class="font-bold text-emerald-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part4" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8"><strong>🎬 Scene 4: The Algae Alliance</strong><br><br>Visiting the village pond to collect water, Arjun spotted green slimy layers floating everywhere. "Algae bloom!" exclaimed a scientist studying the water. She explained: "These microscopic algae are plants too, but they live in water and have no proper roots or leaves. Yet they're autotrophic—they perform photosynthesis just like terrestrial plants!" Arjun was amazed. "So plants don't need to be rooted to survive?" The scientist smiled, "Evolution created countless survival strategies for every environment on Earth!"</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-emerald-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4"><strong>Algae lack proper roots and leaves, yet they are autotrophic. What enables them to produce their own food without traditional plant structures?</strong></p>
+                <div class="space-y-3 mb-4">
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q4" value="A" class="mr-3"> <span class="font-semibold">A) Presence of chlorophyll and ability to photosynthesize</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q4" value="B" class="mr-3"> <span class="font-semibold">B) Absorption of nutrients directly from soil</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q4" value="C" class="mr-3"> <span class="font-semibold">C) Trapping insects for nutrition</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q4" value="D" class="mr-3"> <span class="font-semibold">D) Feeding on decaying organic matter</span>
+                    </label>
+                </div>
+                <button id="btn4" onclick="gradeAnswerMCQ(4, 'A')" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-emerald-900 transition-colors">Submit Answer</button>
+                <div id="exp4" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm"><strong>Correct Answer: A) Presence of chlorophyll and ability to photosynthesize</strong><br><br><strong>Why A is Correct:</strong> Algae contain chlorophyll and perform photosynthesis—the core autotrophic mechanism. Structure (roots/leaves) is NOT required for photosynthesis. Algae absorb water, CO2, and minerals directly from aquatic environment; their entire body is photosynthetically active.<br><br><strong>Why Others Are Wrong:</strong><br>B) Absorption from soil - Algae are aquatic, not soil-dwelling; they absorb from water, not soil.<br>C) Trapping insects - Insectivorous nutrition; algae lack mechanism to trap insects; describes specialized plants.<br>D) Feeding on dead matter - Saprophytic nutrition; algae are PRIMARY PRODUCERS (autotrophs), not decomposers or heterotrophs.</p><button onclick="unlockNext(4)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Continue</button></div>
+                <div id="success4" class="hidden mt-4 p-4 bg-emerald-100 border-2 border-emerald-300 rounded-2xl text-center"><p class="font-bold text-emerald-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="part5" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 mb-8 hidden fade-in">
+            <p class="text-lg text-gray-600 leading-relaxed mb-8"><strong>🎬 Scene 5: The Ultimate Symbiosis</strong><br><br>Examining old rocks in the village, Arjun found crusty, colorful patches called lichens. The scientist explained: "This is nature's perfect partnership—a fungus and an alga living as one organism! The alga photosynthesizes and feeds both. The fungus provides water, minerals, and shelter." Arjun gasped, "They benefit each other?" "Exactly! This is symbiotic nutrition." The scientist continued, "Now you understand—plants evolved dozens of feeding strategies to dominate every corner of Earth. That's why Earth thrives with such diverse green life!"</p>
+            <div class="bg-cream p-8 rounded-3xl border-2 border-emerald-200 relative">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-primary text-xl">💡 Concept Check</h3><button onclick="checkAiDoubt()" class="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl border border-purple-200 hover:bg-purple-200 shadow-sm">🤖 Ask AI</button></div>
+                <p class="text-gray-700 font-bold text-lg mb-4"><strong>In a lichen, how do the fungus and alga contribute to their mutual survival?</strong></p>
+                <div class="space-y-3 mb-4">
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q5" value="A" class="mr-3"> <span class="font-semibold">A) Fungus traps insects; alga absorbs minerals</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q5" value="B" class="mr-3"> <span class="font-semibold">B) Alga photosynthesizes food; fungus provides water, minerals, shelter</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q5" value="C" class="mr-3"> <span class="font-semibold">C) Both trap insects and decompose matter</span>
+                    </label>
+                    <label class="flex items-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="q5" value="D" class="mr-3"> <span class="font-semibold">D) Fungus absorbs CO2; alga absorbs water</span>
+                    </label>
+                </div>
+                <button id="btn5" onclick="gradeAnswerMCQ(5, 'B')" class="w-full bg-primary text-white font-extrabold py-4 rounded-xl shadow-md hover:bg-emerald-900 transition-colors">Submit Answer</button>
+                <div id="exp5" class="hidden mt-6 p-6 bg-red-50 border-2 border-red-200 rounded-2xl"><h4 class="font-bold text-red-600 mb-2">❌ Not quite! NCERT Explanation:</h4><p class="text-gray-700 text-sm"><strong>Correct Answer: B) Alga photosynthesizes food; fungus provides water, minerals, shelter</strong><br><br><strong>Why B is Correct:</strong> Alga (green component) produces glucose via photosynthesis for both organisms. Fungus (non-green) absorbs water from rocks/air, extracts minerals via acids, provides physical structure and shelter, protects from drying and UV damage. True mutualism—both benefit equally.<br><br><strong>Why Others Are Wrong:</strong><br>A) Fungus traps insects - Fungi don't trap insects; that's a carnivorous plant trait; neither component does this.<br>C) Both trap insects & decompose - Lichens aren't carnivorous or decomposers; misidentifies their ecological role.<br>D) Fungus absorbs CO2; alga absorbs water - Reverses their actual roles; fungus absorbs water, alga absorbs CO2 for photosynthesis.</p><button onclick="unlockNext(5)" class="mt-4 bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-black">Finish Quest</button></div>
+                <div id="success5" class="hidden mt-4 p-4 bg-emerald-100 border-2 border-emerald-300 rounded-2xl text-center"><p class="font-bold text-emerald-800 text-lg">✅ Excellent! +100 Points!</p></div>
+            </div>
+        </div>
+
+        <div id="partFinal" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-lg border border-gray-100 hidden fade-in text-center"><div class="text-6xl mb-4">🏆</div><h2 class="text-4xl font-extrabold text-success mb-4">Quest Complete!</h2><p class="text-xl text-gray-600 mb-8 font-medium">You've mastered the diverse world of Plant Nutrition!</p><button onclick="window.location.href='biologyclass7.html'" class="bg-primary text-white font-extrabold text-2xl px-12 py-6 rounded-2xl hover:bg-emerald-900 transition-transform shadow-xl hover:-translate-y-1">Return to Topic Menu</button></div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://pvkdqyuflatwfydowzvq.supabase.co'; const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2a2RxeXVmbGF0d2Z5ZG93enZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NzQzMzAsImV4cCI6MjA5MDQ1MDMzMH0.meJSpnkFRKbpq32erE_2bgP-7wonIQX-00ArkrRCu4s';
+        let userProfile = null; let userData = { points: 0, streak: 0, questions_attempted: 0, questions_correct: 0, questions_wrong: 0 }; const TOTAL_QUESTIONS = 5; 
+        const CURRENT_STORY_ID = 'story-bio7-adventure';
+
+        async function loadUser() {
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return window.location.replace("login.html");
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+                if (profile) {
+                    userProfile = profile;
+                    const status = localStorage.getItem(CURRENT_STORY_ID + '_status');
+                    if (status !== 'started' && status !== 'completed') {
+                        if (profile.subscription_status === 'free' && (profile.daily_story_count || 0) >= 1) {
+                            alert("Bouncer: You have reached your free daily limit! Redirecting to dashboard."); window.location.replace("biologyclass7.html"); return;
+                        } else {
+                            await supabase.from('profiles').update({ daily_story_count: (profile.daily_story_count || 0) + 1 }).eq('id', session.user.id); localStorage.setItem(CURRENT_STORY_ID + '_status', 'started');
+                        }
+                    }
+                    userData = { points: profile.points || 0, streak: profile.streak || 0, questions_attempted: profile.questions_attempted || 0, questions_correct: profile.questions_correct || 0, questions_wrong: profile.questions_wrong || 0 };
+                    document.getElementById('live-points').innerText = userData.points; document.getElementById('live-streak').innerText = userData.streak;
+                }
+                document.getElementById('story-body').classList.remove('secure-hide'); let savedProg = parseInt(localStorage.getItem(CURRENT_STORY_ID + '_progress')) || 1; for(let i=1; i<savedProg; i++){ document.getElementById('btn'+i)?.classList.add('hidden'); let status = localStorage.getItem(CURRENT_STORY_ID + '_q' + i); if(status === 'wrong') { let exp = document.getElementById('exp'+i); if(exp){ exp.classList.remove('hidden'); let cBtn = exp.querySelector('button'); if(cBtn) cBtn.style.display = 'none'; } } else { document.getElementById('success'+i)?.classList.remove('hidden'); } let nxt = (i+1 <= TOTAL_QUESTIONS) ? 'part'+(i+1) : 'partFinal'; document.getElementById(nxt)?.classList.remove('hidden'); document.getElementById('progressBar').style.width = ((i/TOTAL_QUESTIONS)*100)+'%'; } if(savedProg > 1) setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 500);
+            } catch (err) { console.error(err); }
+        }
+        loadUser();
+
+        async function checkAiDoubt() {
+            let aiUsed = userProfile.daily_ai_count || 0; let maxDoubts = userProfile.subscription_status === 'premium' ? 1000 : 1;
+            if (aiUsed >= maxDoubts) { alert("You have reached your limit of AI Doubts!"); return; }
+            try { const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); localStorage.setItem('returnUrl', window.location.href); window.location.href = "ai-chat.html"; } catch(e) { alert("Error connecting."); }
+        }
+
+        async function gradeAnswerMCQ(qNum, correctAnswer) {
+            const selectedAnswer = document.querySelector(`input[name="q${qNum}"]:checked`);
+            if (!selectedAnswer) { alert("Please select an answer first!"); return; }
+            
+            const btn = document.getElementById(`btn${qNum}`);
+            if (btn.disabled) return; 
+            btn.disabled = true; btn.innerText = "Grading...";
+
+            const isCorrect = selectedAnswer.value === correctAnswer;
+            localStorage.setItem(CURRENT_STORY_ID + '_q' + qNum, isCorrect ? 'correct' : 'wrong'); 
+            userData.questions_attempted += 1; 
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            if (isCorrect) {
+                userData.points += 100; userData.questions_correct += 1;
+                document.getElementById(`success${qNum}`).classList.remove('hidden'); 
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase); 
+                setTimeout(() => { unlockNext(qNum); }, 1500); 
+            } else {
+                userData.points = Math.max(0, userData.points - 10); userData.questions_wrong += 1;
+                document.getElementById(`exp${qNum}`).classList.remove('hidden'); 
+                document.getElementById('live-points').innerText = userData.points;
+                await saveToDatabase(supabase);
+            }
+        }
+
+        async function saveToDatabase(supabase) { 
+            await supabase.from('profiles').update({ points: userData.points, questions_attempted: userData.questions_attempted, questions_correct: userData.questions_correct, questions_wrong: userData.questions_wrong }).eq('id', userProfile.id); 
+        }
+
+        function unlockNext(currentQNum) {
+            document.getElementById(`btn${currentQNum}`)?.classList.add('hidden'); 
+            let nextPartNum = currentQNum + 1; 
+            document.getElementById('progressBar').style.width = `${(currentQNum / TOTAL_QUESTIONS) * 100}%`;
+            if (nextPartNum <= TOTAL_QUESTIONS) { document.getElementById(`part${nextPartNum}`).classList.remove('hidden'); } else { document.getElementById('partFinal').classList.remove('hidden'); localStorage.setItem(CURRENT_STORY_ID + '_status', 'completed'); }
+            localStorage.setItem(CURRENT_STORY_ID + '_progress', nextPartNum); 
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
